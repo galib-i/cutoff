@@ -53,7 +53,7 @@ PlasmaExtras.PlasmoidHeading {
     }
 
     Behavior on height {
-        enabled: kickoff.expanded
+        enabled: kickoff.isMenuOpen
         NumberAnimation {
             duration: Kirigami.Units.longDuration
             easing.type: Easing.InQuad

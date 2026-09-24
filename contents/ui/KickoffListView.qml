@@ -107,7 +107,7 @@ EmptyPage {
         leftMargin: kickoff.backgroundMetrics.leftPadding
         rightMargin: kickoff.backgroundMetrics.rightPadding
 
-        currentIndex: count > 0 ? 0 : -1
+        currentIndex: -1
         focus: true
         interactive: height < contentHeight
         pixelAligned: true
@@ -124,7 +124,7 @@ EmptyPage {
 
         onCountChanged: {
             if (!activeFocus) {
-                currentIndex = (count > 0 ? 0 : -1)
+                currentIndex = -1
             } else if (count > 0 && currentIndex !== -1) {
                 positionViewAtIndex(currentIndex, ListView.Contain)
             }
@@ -196,8 +196,8 @@ EmptyPage {
             target: kickoff
             function onIsMenuOpenChanged() {
                 if (!kickoff.isMenuOpen) {
-                    view.currentIndex = 0
-                    view.positionViewAtBeginning()
+                    view.currentIndex = -1
+                    view.contentY = view.originY
                 }
             }
         }

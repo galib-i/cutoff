@@ -119,7 +119,7 @@ RowLayout {
                 onClicked: {
                     filteredButtonsModel.trigger(index);
                     if (kickoff.hideOnWindowDeactivate) {
-                        kickoff.expanded = false;
+                        kickoff.closeMenu();
                     }
                 }
                 display: Plasmoid.configuration.showActionButtonCaptions ? PC3.AbstractButton.TextBesideIcon : PC3.AbstractButton.IconOnly;
@@ -217,7 +217,7 @@ RowLayout {
             onClicked: {
                 filteredMenuItemsModel.trigger(index)
                 if (kickoff.hideOnWindowDeactivate) {
-                    kickoff.expanded = false;
+                    kickoff.closeMenu();
                 }
             }
         }

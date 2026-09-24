@@ -131,7 +131,7 @@ EmptyPage {
         cellHeight: KickoffSingleton.gridCellSize
         cellWidth: KickoffSingleton.gridCellSize
 
-        currentIndex: count > 0 ? 0 : -1
+        currentIndex: -1
         focus: true
         interactive: height < contentHeight
         pixelAligned: true
@@ -192,8 +192,8 @@ EmptyPage {
             target: kickoff
             function onIsMenuOpenChanged() {
                 if (!kickoff.isMenuOpen) {
-                    view.currentIndex = 0
-                    view.positionViewAtBeginning()
+                    view.currentIndex = -1
+                    view.contentY = view.originY
                 }
             }
         }

@@ -208,7 +208,12 @@ PlasmoidItem {
                 }
             }
         }
-        hideOnWindowDeactivate: true
+        hideOnWindowDeactivate: kickoff.hideOnWindowDeactivate
+        onWindowDeactivated: {
+            if (kickoff.hideOnWindowDeactivate) {
+                visible = false;
+            }
+        }
 
         mainItem: FullRepresentation {
             id: floatingFullRep

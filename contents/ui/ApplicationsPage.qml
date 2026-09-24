@@ -155,7 +155,7 @@ BasePage {
                                         if (kickoff.rootModel.favoritesModel.trigger) {
                                             sortedFavoritesModel.trigger(index)
                                             if (kickoff.hideOnWindowDeactivate) {
-                                                kickoff.expanded = false;
+                                                kickoff.closeMenu();
                                             }
                                         }
                                     }
