@@ -181,8 +181,8 @@ BasePage {
 
         Connections {
             target: kickoff
-            function onExpandedChanged() {
-                if (!kickoff.expanded && kickoff.contentArea && kickoff.contentArea.currentItem) {
+            function onIsMenuOpenChanged() {
+                if (!kickoff.isMenuOpen && kickoff.contentArea && kickoff.contentArea.currentItem) {
                     kickoff.contentArea.currentItem.forceActiveFocus()
                 }
             }

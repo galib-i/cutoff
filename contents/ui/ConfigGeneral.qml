@@ -34,12 +34,16 @@ KCM.SimpleKCM {
     property alias cfg_showActionButtonCaptions: showActionButtonCaptions.checked
     property alias cfg_compactMode: compactModeCheckbox.checked
     property alias cfg_centerOnScreen: centerOnScreenCheckbox.checked
+    property alias cfg_popupWidth: popupWidthSpinBox.value
+    property alias cfg_popupHeight: popupHeightSpinBox.value
     property alias cfg_highlightNewlyInstalledApps: highlightNewlyInstalledAppsCheckbox.checked
 
     // Catch these to avoid warnings
     property int cfg_appNameFormatDefault
     property bool cfg_compactModeDefault
     property bool cfg_centerOnScreenDefault
+    property int cfg_popupWidthDefault
+    property int cfg_popupHeightDefault
     property bool cfg_highlightNewlyInstalledAppsDefault
     property string cfg_iconDefault
     property string cfg_menuLabelDefault
@@ -160,26 +164,14 @@ KCM.SimpleKCM {
 
         QQC2.ComboBox {
             id: appNameFormat
-
-            Kirigami.FormData.label: i18nc("@label:listbox", "Show applications as:")
-
+            Kirigami.FormData.label: i18nc("Appearance options", "Appearance:")
             model: [i18nc("@item:inlistbox", "Name only"), i18nc("@item:inlistbox", "Description only"), i18nc("@item:inlistbox", "Name (Description)"), i18nc("@item:inlistbox", "Description (Name)")]
-        }
-
-        Item {
-            Kirigami.FormData.isSection: true
         }
 
         QQC2.CheckBox {
             id: compactModeCheckbox
-            Kirigami.FormData.label: i18nc("General options", "General:")
             text: i18nc("@option:check", "Use compact list item style")
             checked: Plasmoid.configuration.compactMode
-        }
-        QQC2.CheckBox {
-            id: centerOnScreenCheckbox
-            text: i18nc("@option:check", "Center on screen")
-            checked: Plasmoid.configuration.centerOnScreen
         }
 
         QQC2.CheckBox {
@@ -187,17 +179,54 @@ KCM.SimpleKCM {
             text: i18nc("@option:check", "Highlight newly-installed applications")
         }
 
-        QQC2.Button {
-            enabled: KConfig.KAuthorized.authorizeControlModule("kcm_plasmasearch")
-            icon.name: "settings-configure"
-            text: i18nc("@action:button opens plasmasearch kcm", "Configure Search Plugins…")
-            onClicked: KCM.KCMLauncher.openSystemSettings("kcm_plasmasearch")
+        Item {
+            Kirigami.FormData.isSection: true
+        }
+        
+        QQC2.CheckBox {
+            id: centerOnScreenCheckbox
+            Kirigami.FormData.label: i18n("Menu:")
+            text: i18nc("@option:check", "Center on screen")
+            checked: Plasmoid.configuration.centerOnScreen
         }
 
+        RowLayout {
+            Kirigami.FormData.label: i18nc("@label:spinbox", "Popup Width:")
+            QQC2.SpinBox {
+                id: popupWidthSpinBox
+                enabled: centerOnScreenCheckbox.checked
+                from: 0
+                to: 1000
+                stepSize: 50
+                value: Plasmoid.configuration.popupWidth
+            }
+            QQC2.Label {
+                text: "(0 = Auto)"
+            }
+        }
+        
+        RowLayout {
+            Kirigami.FormData.label: i18nc("@label:spinbox", "Popup Height:")
+            QQC2.SpinBox {
+                id: popupHeightSpinBox
+                enabled: centerOnScreenCheckbox.checked
+                from: 0
+                to: 1000
+                stepSize: 50
+                value: Plasmoid.configuration.popupHeight
+            }
+            QQC2.Label {
+                text: "(0 = Auto)"
+            }
+        }
+
+        Item {
+            Kirigami.FormData.isSection: true
+        }
 
         QQC2.RadioButton {
             id: powerActionsButton
-            Kirigami.FormData.label: i18nc("@title:group prefix for radio button group", "Show buttons for:")
+            Kirigami.FormData.label: i18nc("@title:group prefix for radio button group", "Footer Buttons:")
             text: i18nc("@option:radio Show buttons for", "Power")
             QQC2.ButtonGroup.group: radioGroup
             property string actions: "suspend,hibernate,reboot,shutdown"
@@ -226,6 +255,18 @@ KCM.SimpleKCM {
         QQC2.CheckBox {
             id: showActionButtonCaptions
             text: i18nc("@option:check", "Show action button captions")
+        }
+
+        Item {
+            Kirigami.FormData.isSection: true
+        }
+
+        QQC2.Button {
+            Kirigami.FormData.label: i18n("Search:")
+            enabled: KConfig.KAuthorized.authorizeControlModule("kcm_plasmasearch")
+            icon.name: "settings-configure"
+            text: i18nc("@action:button opens plasmasearch kcm", "Configure Search Plugins…")
+            onClicked: KCM.KCMLauncher.openSystemSettings("kcm_plasmasearch")
         }
     }
 

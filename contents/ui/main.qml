@@ -204,8 +204,8 @@ PlasmoidItem {
 
         mainItem: FullRepresentation {
             id: floatingFullRep
-            width: Kirigami.Units.gridUnit * 30
-            height: Kirigami.Units.gridUnit * 20
+            width: Plasmoid.configuration.popupWidth > 0 ? Plasmoid.configuration.popupWidth : Math.max(Kirigami.Units.gridUnit * 36, implicitWidth)
+            height: Plasmoid.configuration.popupHeight > 0 ? Plasmoid.configuration.popupHeight : Kirigami.Units.gridUnit * 20
             focus: true
         }
     }

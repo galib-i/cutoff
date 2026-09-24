@@ -89,8 +89,8 @@ PlasmaExtras.PlasmoidHeading {
                     }
                     Connections {
                         target: kickoff
-                        function onExpandedChanged() {
-                            if (!kickoff.expanded) {
+                        function onIsMenuOpenChanged() {
+                            if (!kickoff.isMenuOpen) {
                                 searchField.clear()
                             }
                         }

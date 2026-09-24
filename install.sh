@@ -49,7 +49,7 @@ _sudo() {
 }
 
 install_widget() {
-    echo "=> Installing $PLASMOID_NAME ($TARGET) ..."
+    echo "=> Installing $PLASMOID_NAME ($TARGET)..."
     
     if [ "$TARGET" = "local" ]; then
         kpackagetool6 -t Plasma/Applet -i "$SCRIPT_DIR"
@@ -59,7 +59,7 @@ install_widget() {
 }
 
 update_widget() {
-    echo "=> Updating $PLASMOID_NAME ($TARGET) ..."
+    echo "Updating $PLASMOID_NAME ($TARGET)..."
     
     if [ "$TARGET" = "local" ]; then
         kpackagetool6 -t Plasma/Applet -u "$SCRIPT_DIR"
@@ -69,7 +69,7 @@ update_widget() {
 }
 
 uninstall_widget() {
-    echo "=> Removing $PLASMOID_NAME ($TARGET) ..."
+    echo "=> Removing $PLASMOID_NAME ($TARGET)..."
 
     if [ "$TARGET" = "local" ]; then
         kpackagetool6 -t Plasma/Applet -r "$PLASMOID_NAME" || echo "  Not installed locally."

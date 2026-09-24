@@ -161,7 +161,7 @@ EmptyPage {
 
         Connections {
             target: kickoff
-            function onExpandedChanged() {
+            function onIsMenuOpenChanged() {
                 if (!kickoff.isMenuOpen) {
                     root.blockingHoverFocus = true
                     root.interceptedPosition = null
