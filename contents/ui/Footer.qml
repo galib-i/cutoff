@@ -8,7 +8,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import org.kde.ksvg as KSvg
 import org.kde.plasma.components as PC3
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.kirigami as Kirigami

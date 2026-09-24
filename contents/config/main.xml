@@ -5,6 +5,10 @@
     http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
     <kcfgfile name=""/>
     <group name="General">
+        <entry name="pin" type="Bool">
+            <label>Whether to keep the popup open when it loses focus</label>
+            <default>false</default>
+        </entry>
         <entry name="icon" type="String">
             <label>The name of the icon used in the compact representation (e.g. on a small panel).</label>
             <default>start-here-kde-symbolic</default>

@@ -53,4 +53,4 @@ Right-click the widget and choose *Configure Cutoff…*:
 </p>
 
 ##
-Licensed under the [GPLv2 or later](LICENSE), inheriting from the original source code.
+*Licensed under the [GPLv2 or later](LICENSE), inheriting from the original source code.*

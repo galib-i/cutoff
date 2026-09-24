@@ -9,10 +9,7 @@ import QtQuick
 import QtQuick.Templates as T
 import org.kde.plasma.private.kicker as Kicker
 import org.kde.kirigami as Kirigami
-import org.kde.plasma.plasmoid
 import org.kde.plasma.extras as PlasmaExtras
-import org.kde.plasma.components as PC3
-import QtQuick.Controls as QQC2
 import org.kde.kitemmodels as KItemModels
 
 BasePage {
@@ -26,7 +23,7 @@ BasePage {
             const sourceIndex = mapToSource(this.index(index, 0));
             kickoff.rootModel.favoritesModel.trigger(sourceIndex.row, "", null);
         }
-        
+
     }
     id: root
 

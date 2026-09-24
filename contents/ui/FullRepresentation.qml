@@ -15,7 +15,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import QtQuick.Layouts
-import org.kde.plasma.plasmoid
 import org.kde.plasma.private.kicker as Kicker
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.extras as PlasmaExtras

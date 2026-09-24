@@ -14,10 +14,6 @@ import QtQuick.Layouts
 import org.kde.plasma.components as PC3
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.kirigami as Kirigami
-import org.kde.kirigamiaddons.components as KirigamiComponents
-import org.kde.coreaddons as KCoreAddons
-import org.kde.kcmutils as KCM
-import org.kde.config as KConfig
 import org.kde.plasma.plasmoid
 
 PlasmaExtras.PlasmoidHeading {
@@ -156,7 +152,7 @@ PlasmaExtras.PlasmoidHeading {
                 PC3.ToolButton {
                     id: pinButton
                     checkable: true
-                    checked: false
+                    checked: Plasmoid.configuration.pin
                     icon.name: "window-pin"
                     text: i18nc("@action:button Pin widget open if it loses focus, icon-only button, for tooltip/Accessible", "Keep Open")
                     display: PC3.ToolButton.IconOnly

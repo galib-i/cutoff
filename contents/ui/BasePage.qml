@@ -11,10 +11,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Layouts
-import QtQuick.Templates as T
-import org.kde.ksvg as KSvg
-import org.kde.plasma.plasmoid
 
 FocusScope {
     id: root

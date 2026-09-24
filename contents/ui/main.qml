@@ -28,6 +28,8 @@ PlasmoidItem {
     id: kickoff
     property bool isMenuOpen: Plasmoid.configuration.centerOnScreen ? centerDialog.visible : kickoff.expanded
     property alias centerDialogVisible: centerDialog.visible
+    property bool hideOnWindowDeactivate: true
+    onHideOnWindowDeactivateChanged: plasmoid.hideOnWindowDeactivate = hideOnWindowDeactivate
     function closeMenu() {
         if (Plasmoid.configuration.centerOnScreen) {
             centerDialogVisible = false;
@@ -209,6 +211,7 @@ PlasmoidItem {
             }
         }
         hideOnWindowDeactivate: kickoff.hideOnWindowDeactivate
+        flags: kickoff.hideOnWindowDeactivate ? (Qt.Dialog | Qt.FramelessWindowHint) : (Qt.Dialog | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         onWindowDeactivated: {
             if (kickoff.hideOnWindowDeactivate) {
                 visible = false;
