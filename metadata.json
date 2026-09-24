@@ -1,0 +1,26 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Id": "com.github.galib.cutoff",
+    "PluginName": "com.github.galib.cutoff",
+    "Name": "Cutoff",
+    "Description": "KDE Plasma's Application Launcher, but just the list. A fork of Kickoff by Martin Gräßlin and Mikel Johnson.",
+    "Authors": [
+      {
+        "Name": "Galib"
+      }
+    ],
+    "BugReportUrl": "https://github.com/galib-i/cutoff/issues",
+    "Category": "Application Launchers",
+    "EnabledByDefault": true,
+    "FormFactors": ["desktop"],
+    "Icon": "start-here-kde",
+    "License": "GPL-2.0+",
+    "Website": "https://github.com/galib-i/cutoff"
+  },
+  "X-Plasma-API-Minimum-Version": "6.0",
+  "X-Plasma-MainScript": "ui/main.qml",
+  "X-Plasma-Provides": [
+    "org.kde.plasma.launchermenu"
+  ]
+}
