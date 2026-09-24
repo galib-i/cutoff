@@ -1,0 +1,2 @@
+singleton ActionMenu ActionMenu.qml
+singleton KickoffSingleton KickoffSingleton.qml

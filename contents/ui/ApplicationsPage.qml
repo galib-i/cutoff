@@ -13,8 +13,21 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.components as PC3
 import QtQuick.Controls as QQC2
+import org.kde.kitemmodels as KItemModels
 
 BasePage {
+    KItemModels.KSortFilterProxyModel {
+        id: sortedFavoritesModel
+        sourceModel: kickoff.rootModel.favoritesModel
+        sortRole: KItemModels.KRoleNames.role("display")
+        sortOrder: Qt.AscendingOrder
+
+        function trigger(index) {
+            const sourceIndex = mapToSource(this.index(index, 0));
+            kickoff.rootModel.favoritesModel.trigger(sourceIndex.row, "", null);
+        }
+        
+    }
     id: root
 
     property real flashFavorite: 0
@@ -128,7 +141,7 @@ BasePage {
                             width: parent.width
                             height: contentHeight
                             interactive: false
-                            model: kickoff.rootModel.favoritesModel
+                            model: sortedFavoritesModel
                             delegate: KickoffListDelegate {
                                 id: favDelegate
                                 width: applicationsListView.view.availableWidth
@@ -140,7 +153,7 @@ BasePage {
                                 action: T.Action {
                                     onTriggered: {
                                         if (kickoff.rootModel.favoritesModel.trigger) {
-                                            kickoff.rootModel.favoritesModel.trigger(index, "", null)
+                                            sortedFavoritesModel.trigger(index)
                                             if (kickoff.hideOnWindowDeactivate) {
                                                 kickoff.expanded = false;
                                             }
