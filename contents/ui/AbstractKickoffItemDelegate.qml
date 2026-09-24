@@ -140,7 +140,7 @@ T.ItemDelegate {
             // if successfully triggered, close popup
             if (root.view.model.trigger && root.view.model.trigger(root.index, "", null)) {
                 if (kickoff.hideOnWindowDeactivate) {
-                    kickoff.expanded = false;
+                    kickoff.closeMenu();
                 }
             }
         }
@@ -201,7 +201,7 @@ T.ItemDelegate {
             && !root.view.movedWithWheel
             // Fix VerticalStackView animation causing view currentIndex
             // to change while delegates are moving under the mouse cursor
-            && kickoff.fullRepresentationItem && !kickoff.fullRepresentationItem.contentItem.busy && !kickoff.fullRepresentationItem.blockingHoverFocus
+            && kickoff.realFullRep && !kickoff.realFullRep.contentItem.busy && !kickoff.realFullRep.blockingHoverFocus
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onEntered: {

@@ -56,7 +56,6 @@ install_widget() {
     else
         _sudo kpackagetool6 -t Plasma/Applet $GLOBAL_FLAG -i "$SCRIPT_DIR"
     fi
-    echo "=> Install complete!"
 }
 
 update_widget() {
@@ -67,7 +66,6 @@ update_widget() {
     else
         _sudo kpackagetool6 -t Plasma/Applet $GLOBAL_FLAG -u "$SCRIPT_DIR"
     fi
-    echo "=> Update complete!"
 }
 
 uninstall_widget() {
@@ -78,7 +76,6 @@ uninstall_widget() {
     else
         _sudo kpackagetool6 -t Plasma/Applet $GLOBAL_FLAG -r "$PLASMOID_NAME" || echo "  Not installed globally."
     fi
-    echo "=> Uninstall complete!"
 }
 
 case "$ACTION" in
@@ -90,7 +87,7 @@ case "$ACTION" in
         ;;
     update)    
         update_widget
-        echo "=> You may need to restart Plasma (log out/in or run: systemctl restart --user plasma-plasmashell.service) to see changes."
+        echo "You may need to restart Plasma (log out/in or run: systemctl restart --user plasma-plasmashell.service) to see changes."
         ;;
     *)
         echo "Error: Action must be 'install', 'uninstall', or 'update'."

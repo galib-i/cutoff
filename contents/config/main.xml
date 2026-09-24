@@ -17,6 +17,10 @@
             <label>The format used in the display of application names: 0 = NameOnly, 1 = GenericNameOnly, 2 = NameAndGenericName, 3 = GenericNameAndName</label>
             <default>2</default>
         </entry>
+        <entry name="centerOnScreen" type="Bool">
+            <label>Whether to center the widget on the screen</label>
+            <default>false</default>
+        </entry>
         <entry name="systemFavorites" type="StringList">
             <label>List of system action favorites.</label>
             <default>suspend,hibernate,reboot,shutdown</default>

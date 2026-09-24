@@ -33,11 +33,13 @@ KCM.SimpleKCM {
     property int cfg_primaryActions: Plasmoid.configuration.primaryActions
     property alias cfg_showActionButtonCaptions: showActionButtonCaptions.checked
     property alias cfg_compactMode: compactModeCheckbox.checked
+    property alias cfg_centerOnScreen: centerOnScreenCheckbox.checked
     property alias cfg_highlightNewlyInstalledApps: highlightNewlyInstalledAppsCheckbox.checked
 
     // Catch these to avoid warnings
     property int cfg_appNameFormatDefault
     property bool cfg_compactModeDefault
+    property bool cfg_centerOnScreenDefault
     property bool cfg_highlightNewlyInstalledAppsDefault
     property string cfg_iconDefault
     property string cfg_menuLabelDefault
@@ -173,6 +175,11 @@ KCM.SimpleKCM {
             Kirigami.FormData.label: i18nc("General options", "General:")
             text: i18nc("@option:check", "Use compact list item style")
             checked: Plasmoid.configuration.compactMode
+        }
+        QQC2.CheckBox {
+            id: centerOnScreenCheckbox
+            text: i18nc("@option:check", "Center on screen")
+            checked: Plasmoid.configuration.centerOnScreen
         }
 
         QQC2.CheckBox {

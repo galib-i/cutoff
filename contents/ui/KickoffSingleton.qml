@@ -35,7 +35,6 @@ Item {
     readonly property KSvg.Svg lineSvg: KSvg.Svg {
         imagePath: "widgets/line"
         property int horLineHeight: elementSize("horizontal-line").height
-        property int vertLineWidth: elementSize("vertical-line").width
     }
     //END
 
@@ -53,7 +52,6 @@ Item {
 
     readonly property real gridCellSize: gridDelegate.implicitHeight
     readonly property real compactListDelegateHeight: compactListDelegate.implicitHeight
-    readonly property real compactListDelegateContentHeight: compactListDelegate.implicitContentHeight
     //END
 
     //BEGIN Private

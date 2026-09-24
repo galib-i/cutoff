@@ -12,6 +12,7 @@
 
 pragma ComponentBehavior: Bound
 
+
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
@@ -25,12 +26,36 @@ import "code/tools.js" as Tools
 
 PlasmoidItem {
     id: kickoff
+    property bool isMenuOpen: Plasmoid.configuration.centerOnScreen ? centerDialog.visible : kickoff.expanded
+    property alias centerDialogVisible: centerDialog.visible
+    function closeMenu() {
+        if (Plasmoid.configuration.centerOnScreen) {
+            centerDialogVisible = false;
+        } else {
+            kickoff.expanded = false;
+        }
+    }
+    function openMenu() {
+        if (Plasmoid.configuration.centerOnScreen) {
+            centerDialogVisible = true;
+        } else {
+            kickoff.expanded = true;
+        }
+    }
+    function toggleMenu(wasOpen) {
+        if (Plasmoid.configuration.centerOnScreen) {
+            centerDialogVisible = !wasOpen;
+        } else {
+            kickoff.expanded = !wasOpen;
+        }
+    }
 
     width: Kirigami.Units.iconSizes.huge
     height: Kirigami.Units.iconSizes.huge
+    property Item realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRep : fullRepresentationItem
 
-    switchWidth: fullRepresentationItem ? fullRepresentationItem.Layout.minimumWidth : Kirigami.Units.iconSizes.huge * 10
-    switchHeight: fullRepresentationItem ? fullRepresentationItem.Layout.minimumHeight : Kirigami.Units.iconSizes.huge * 10
+    switchWidth: realFullRep ? realFullRep.Layout.minimumWidth : Kirigami.Units.iconSizes.huge * 10
+    switchHeight: realFullRep ? realFullRep.Layout.minimumHeight : Kirigami.Units.iconSizes.huge * 10
 
     // The properties are defined here instead of the singleton because each
     // instance of Kickoff requires different instances of these properties
@@ -150,33 +175,40 @@ PlasmoidItem {
         imagePath: Plasmoid.formFactor === PlasmaCore.Types.Planar ? "widgets/background" : "dialogs/background"
     }
 
-    // This is here rather than in the singleton with the other metrics items
-    // because the list delegate's height depends on a configuration setting
-    // and the singleton can't access those
-    readonly property real listDelegateHeight: listDelegate.height
-    KickoffListDelegate {
-        id: listDelegate
-        visible: false
-        enabled: false
-        model: null
-        index: -1
-        text: "asdf"
-        url: ""
-        decoration: "start-here-kde"
-        description: "asdf"
-        action: null
-        indicator: null
-    }
-
     // Used to show smaller Kickoff on small screens
-    readonly property int minimumGridRowCount: Math.min(Screen.desktopAvailableWidth, Screen.desktopAvailableHeight) * Screen.devicePixelRatio < KickoffSingleton.gridCellSize * 4 + (fullRepresentationItem ? fullRepresentationItem.normalPage.preferredSideBarWidth : KickoffSingleton.gridCellSize * 2) ? 2 : 4
+    readonly property int minimumGridRowCount: Math.min(Screen.desktopAvailableWidth, Screen.desktopAvailableHeight) * Screen.devicePixelRatio < KickoffSingleton.gridCellSize * 4 + (realFullRep ? realFullRep.normalPage.preferredSideBarWidth : KickoffSingleton.gridCellSize * 2) ? 2 : 4
     //END
 
     Plasmoid.icon: Plasmoid.configuration.icon
 
     preferredRepresentation: compactRepresentation
 
-    fullRepresentation: FullRepresentation { focus: true }
+    fullRepresentation: Plasmoid.configuration.centerOnScreen ? compactRepresentation : defaultFullRepresentation
+
+    Component {
+        id: defaultFullRepresentation
+        FullRepresentation { focus: true }
+    }
+
+    PlasmaCore.Dialog {
+        id: centerDialog
+        location: PlasmaCore.Types.Floating
+        visible: false
+        onVisibleChanged: {
+            if (visible) {
+                x = Math.round((Screen.width - floatingFullRep.width) / 2)
+                y = Math.round((Screen.height - floatingFullRep.height) / 2)
+            }
+        }
+        hideOnWindowDeactivate: true
+
+        mainItem: FullRepresentation {
+            id: floatingFullRep
+            width: Kirigami.Units.gridUnit * 30
+            height: Kirigami.Units.gridUnit * 20
+            focus: true
+        }
+    }
 
     // Only exists because the default CompactRepresentation doesn't:
     // - open on drag
@@ -242,8 +274,8 @@ PlasmoidItem {
         Accessible.name: Plasmoid.title
         Accessible.role: Accessible.Button
 
-        onPressed: wasExpanded = kickoff.expanded
-        onClicked: kickoff.expanded = !wasExpanded
+        onPressed: wasExpanded = kickoff.isMenuOpen
+        onClicked: kickoff.toggleMenu(wasExpanded)
 
         DropArea {
             id: compactDragArea
@@ -260,7 +292,7 @@ PlasmoidItem {
             id: expandOnDragTimer
             // this is an interaction and not an animation, so we want it as a constant
             interval: 250
-            onTriggered: kickoff.expanded = true
+            onTriggered: kickoff.openMenu()
         }
 
         RowLayout {
