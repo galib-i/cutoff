@@ -51,5 +51,10 @@
             <label>Height of the centered popup</label>
             <default>0</default>
         </entry>
+    
+        <entry name="showConfigureButton" type="Bool">
+            <label>Show configure button in menu</label>
+            <default>true</default>
+        </entry>
     </group>
 </kcfg>

@@ -198,6 +198,14 @@ PlasmoidItem {
             if (visible) {
                 x = Math.round((Screen.width - floatingFullRep.width) / 2)
                 y = Math.round((Screen.height - floatingFullRep.height) / 2)
+                
+                // Force KWin to give the dialog keyboard focus
+                centerDialog.requestActivate()
+                
+                // Force the search box to grab typing cursor
+                if (kickoff.searchField) {
+                    kickoff.searchField.forceActiveFocus(Qt.OtherFocusReason)
+                }
             }
         }
         hideOnWindowDeactivate: true

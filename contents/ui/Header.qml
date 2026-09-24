@@ -129,7 +129,7 @@ PlasmaExtras.PlasmoidHeading {
                 PC3.ToolButton {
                     id: configureButton
                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    visible: Plasmoid.internalAction("configure").enabled
+                    visible: Plasmoid.internalAction("configure").enabled && Plasmoid.configuration.showConfigureButton
                     icon.name: "configure"
                     text: Plasmoid.internalAction("configure").text
                     display: PC3.ToolButton.IconOnly

@@ -36,6 +36,7 @@ KCM.SimpleKCM {
     property alias cfg_centerOnScreen: centerOnScreenCheckbox.checked
     property alias cfg_popupWidth: popupWidthSpinBox.value
     property alias cfg_popupHeight: popupHeightSpinBox.value
+    property alias cfg_showConfigureButton: showConfigureButtonCheckbox.checked
     property alias cfg_highlightNewlyInstalledApps: highlightNewlyInstalledAppsCheckbox.checked
 
     // Catch these to avoid warnings
@@ -44,6 +45,7 @@ KCM.SimpleKCM {
     property bool cfg_centerOnScreenDefault
     property int cfg_popupWidthDefault
     property int cfg_popupHeightDefault
+    property bool cfg_showConfigureButtonDefault
     property bool cfg_highlightNewlyInstalledAppsDefault
     property string cfg_iconDefault
     property string cfg_menuLabelDefault
@@ -172,6 +174,12 @@ KCM.SimpleKCM {
             id: compactModeCheckbox
             text: i18nc("@option:check", "Use compact list item style")
             checked: Plasmoid.configuration.compactMode
+        }
+
+        QQC2.CheckBox {
+            id: showConfigureButtonCheckbox
+            text: i18n("Show settings icon in menu")
+            checked: Plasmoid.configuration.showConfigureButton
         }
 
         QQC2.CheckBox {
