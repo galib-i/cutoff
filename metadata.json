@@ -4,6 +4,7 @@
     "Id": "com.github.galib.cutoff",
     "PluginName": "com.github.galib.cutoff",
     "Name": "Cutoff",
+    "Version": "1.0.0",
     "Description": "KDE Plasma's Application Launcher, but just the list. A fork of Kickoff by Martin Gräßlin and Mikel Johnson.",
     "Authors": [
       {

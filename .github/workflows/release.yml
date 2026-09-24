@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "metadata.json"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+
+      - name: Check if version changed
+        id: version_check
+        run: |
+          # Fetch the old version
+          OLD_VERSION=$(git show HEAD^:metadata.json 2>/dev/null | jq -r '.KPlugin.Version // "null"' || echo "null")
+          NEW_VERSION=$(jq -r '.KPlugin.Version // "null"' metadata.json)
+          
+          if [ "$OLD_VERSION" != "$NEW_VERSION" ] && [ "$NEW_VERSION" != "null" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=v$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create .plasmoid (zip)
+        if: steps.version_check.outputs.changed == 'true'
+        run: |
+          # A .plasmoid file is standard zip format for Plasma widgets
+          zip -r com.github.galib.cutoff.plasmoid . -x "*.git*" "*.github*" "install.sh" "README.md"
+          
+      - name: Create GitHub Release
+        if: steps.version_check.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version_check.outputs.version }}
+          name: Release ${{ steps.version_check.outputs.version }}
+          files: com.github.galib.cutoff.plasmoid
+          generate_release_notes: true
