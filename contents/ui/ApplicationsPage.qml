@@ -131,6 +131,7 @@ BasePage {
 
                         visible: stackView.appsModelRow === 1 && favoritesRepeater.count > 0
                         height: visible ? implicitHeight : 0
+                        onHeightChanged: applicationsListView.view.contentY = applicationsListView.view.originY
 
                         PlasmaExtras.ListSectionHeader {
                             width: parent.width

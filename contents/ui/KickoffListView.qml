@@ -212,10 +212,8 @@ EmptyPage {
         Connections {
             target: root.kickoffItem
             function onIsMenuOpenChanged() {
-                if (!root.kickoffItem.isMenuOpen) {
-                    listViewItem.currentIndex = -1
-                    listViewItem.contentY = listViewItem.originY
-                }
+                listViewItem.currentIndex = -1
+                listViewItem.contentY = listViewItem.originY
             }
         }
 
