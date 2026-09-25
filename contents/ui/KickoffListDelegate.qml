@@ -123,7 +123,7 @@ AbstractKickoffItemDelegate {
 
                 type: Kirigami.Badge.Type.Positive
 
-                Accessible.description: i18n("Newly-installed application")
+                Accessible.description: i18n("Newly-installed application") // qmllint disable unqualified
             }
         }
     }
@@ -140,7 +140,9 @@ AbstractKickoffItemDelegate {
         asynchronous: false
         sourceComponent: KSvg.SvgItem {
             width: parent.width
-            height: KickoffSingleton.lineSvg?.horLineHeight ?? 0
+
+            height: KickoffSingleton.lineSvg?.horLineHeight ?? 0 // qmllint disable missing-property
+
 
             Binding on svg {
                 value: KickoffSingleton.lineSvg

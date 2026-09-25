@@ -26,10 +26,15 @@ import "code/tools.js" as Tools
 
 PlasmoidItem {
     id: kickoff
+    Connections {
+        target: Plasmoid.configuration
+        function onCenterOnScreenChanged() {
+            kickoff.expanded = false;
+            centerDialog.visible = false;
+        }
+    }
     property bool isMenuOpen: Plasmoid.configuration.centerOnScreen ? centerDialog.visible : kickoff.expanded
     property alias centerDialogVisible: centerDialog.visible
-    property bool hideOnWindowDeactivate: true
-    onHideOnWindowDeactivateChanged: plasmoid.hideOnWindowDeactivate = hideOnWindowDeactivate
     function closeMenu() {
         if (Plasmoid.configuration.centerOnScreen) {
             centerDialogVisible = false;
@@ -54,7 +59,7 @@ PlasmoidItem {
 
     width: Kirigami.Units.iconSizes.huge
     height: Kirigami.Units.iconSizes.huge
-    property Item realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRep : fullRepresentationItem
+    property var realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRep : fullRepresentationItem
 
     switchWidth: realFullRep ? realFullRep.Layout.minimumWidth : Kirigami.Units.iconSizes.huge * 10
     switchHeight: realFullRep ? realFullRep.Layout.minimumHeight : Kirigami.Units.iconSizes.huge * 10
@@ -96,7 +101,9 @@ PlasmoidItem {
         highlightNewlyInstalledApps: Plasmoid.configuration.highlightNewlyInstalledApps
 
         Component.onCompleted: {
-            favoritesModel.initForClient("org.kde.plasma.kickoff.favorites.instance-" + Plasmoid.id)
+
+            favoritesModel.initForClient("org.kde.plasma.kickoff.favorites.instance-" + Plasmoid.id) // qmllint disable missing-property
+
         }
     }
 
@@ -136,18 +143,18 @@ PlasmoidItem {
 
     //BEGIN UI elements
     // Set in FullRepresentation.qml
-    property Item header: null
+    property var header: null
 
     // Set in Header.qml
     // QTBUG Using PC3.TextField as type makes assignment fail
     // "Cannot assign QObject* to TextField_QMLTYPE_8*"
-    property Item searchField: null
+    property var searchField: null
 
     // Set in FullRepresentation.qml, ApplicationPage.qml, PlacesPage.qml
-    property Item contentArea: null // is searchView when searching
+    property var contentArea: null // is searchView when searching
 
     // Set in NormalPage.qml
-    property Item footer: null
+    property var footer: null
 
     // True when central pane (and header) LayoutMirroring diverges from global
     // LayoutMirroring, in order to achieve the desired sidebar position
@@ -159,7 +166,7 @@ PlasmoidItem {
 
     readonly property Item dragSource: Item {
         id: dragSource // BUG 449426
-        property Item sourceItem
+        property var sourceItem
         Drag.dragType: Drag.Automatic
         Drag.supportedActions: Qt.CopyAction | Qt.LinkAction | Qt.MoveAction
     }
@@ -189,7 +196,7 @@ PlasmoidItem {
 
     Component {
         id: defaultFullRepresentation
-        FullRepresentation { focus: true }
+        FullRepresentation { focus: true; kickoffItem: kickoff }
     }
 
     PlasmaCore.Dialog {
@@ -200,10 +207,10 @@ PlasmoidItem {
             if (visible) {
                 x = Math.round((Screen.width - floatingFullRep.width) / 2)
                 y = Math.round((Screen.height - floatingFullRep.height) / 2)
-                
+
                 // Force KWin to give the dialog keyboard focus
                 centerDialog.requestActivate()
-                
+
                 // Force the search box to grab typing cursor
                 if (kickoff.searchField) {
                     kickoff.searchField.forceActiveFocus(Qt.OtherFocusReason)
@@ -220,6 +227,7 @@ PlasmoidItem {
 
         mainItem: FullRepresentation {
             id: floatingFullRep
+            kickoffItem: kickoff
             width: Plasmoid.configuration.popupWidth > 0 ? Plasmoid.configuration.popupWidth : Math.max(Kirigami.Units.gridUnit * 36, implicitWidth)
             height: Plasmoid.configuration.popupHeight > 0 ? Plasmoid.configuration.popupHeight : Kirigami.Units.gridUnit * 20
             focus: true
@@ -326,7 +334,7 @@ PlasmoidItem {
                 Layout.maximumHeight: Kirigami.Units.iconSizes.huge
                 Layout.maximumWidth: Kirigami.Units.iconSizes.huge
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                source: Tools.iconOrDefault(Plasmoid.formFactor, Plasmoid.icon)
+                source: Tools.iconOrDefault(Plasmoid.formFactor === PlasmaCore.Types.Vertical, Plasmoid.icon)
                 active: compactRoot.containsMouse || compactDragArea.containsDrag
                 roundToIconSize: implicitHeight === implicitWidth
                 visible: valid && !imageFallback.visible
@@ -391,7 +399,7 @@ PlasmoidItem {
 
     Plasmoid.contextualActions: [
         PlasmaCore.Action {
-            text: i18nc("@action:inmenu launches kmenuedit", "Edit Applications…")
+            text: i18nc("@action:inmenu launches kmenuedit", "Edit Applications…") // qmllint disable unqualified
             icon.name: "kmenuedit"
             visible: Plasmoid.immutability !== PlasmaCore.Types.SystemImmutable
             onTriggered: processRunner.runMenuEditor()

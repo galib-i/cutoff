@@ -76,12 +76,14 @@ Item {
             }
 
             onClicked: {
+
                 const modelActionTriggered = Tools.triggerAction(
-                    menu.visualParent.view.model,
-                    menu.visualParent.index,
+                    menu.visualParent.view.model, // qmllint disable missing-property
+                    menu.visualParent.index, // qmllint disable missing-property
                     modelData.actionId,
                     modelData.actionArgument
                 )
+
                 // close early (if marked as such) to be more responsive to user input
                 if (modelActionTriggered && root.plasmoid.hideOnWindowDeactivate) {
                     root.plasmoid.expanded = false

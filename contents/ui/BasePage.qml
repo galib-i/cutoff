@@ -15,6 +15,8 @@ import QtQuick
 FocusScope {
     id: root
 
+    required property var kickoffItem
+
     property alias contentAreaComponent: contentAreaLoader.sourceComponent
     property alias contentAreaItem: contentAreaLoader.item
 
@@ -27,16 +29,16 @@ FocusScope {
         anchors.fill: parent
 
         Keys.onTabPressed: event => {
-            kickoff.footer.nextItemInFocusChain().forceActiveFocus(Qt.TabFocusReason)
+            root.kickoffItem.footer.nextItemInFocusChain().forceActiveFocus(Qt.TabFocusReason)
         }
         Keys.onBacktabPressed: event => {
-            kickoff.header.avatar.forceActiveFocus(Qt.BacktabFocusReason)
+            root.kickoffItem.header.avatar.forceActiveFocus(Qt.BacktabFocusReason)
         }
         Keys.onUpPressed: event => {
-            kickoff.searchField.forceActiveFocus(Qt.BacktabFocusReason);
+            root.kickoffItem.searchField.forceActiveFocus(Qt.BacktabFocusReason);
         }
         Keys.onDownPressed: event => {
-            kickoff.footer.leaveButtons.nextItemInFocusChain().forceActiveFocus(Qt.TabFocusReason)
+            root.kickoffItem.footer.leaveButtons.nextItemInFocusChain().forceActiveFocus(Qt.TabFocusReason)
         }
     }
 }

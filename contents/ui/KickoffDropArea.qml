@@ -11,7 +11,8 @@ import org.kde.plasma.plasmoid
 
 DropArea {
     id: root
-    required property Flickable targetView
+    required property var kickoffItem
+    required property var targetView
     readonly property bool enableAutoScroll: targetView.height < targetView.contentHeight
     property real scrollUpMargin: 0
     property real scrollDownMargin: 0
@@ -20,41 +21,41 @@ DropArea {
     // We keep track of the index changes as we drag and drop an item
     // to be able to undo them if the drag and drop ends outside the
     // DropArea, which allows to drag and drop items outside kickoff
-    // without changing their order within the view.
+    // without changing their order within the targetView.
     property var dragMoves: []
 
     onPositionChanged: drag => {
-        if (drag.source === kickoff.dragSource) {
-            const source = kickoff.dragSource.sourceItem
+        if (drag.source === root.kickoffItem.dragSource) {
+            const source = root.kickoffItem.dragSource.sourceItem
             if (source === null) {
                 return
             }
-            const view = source.view
-            if (source.view === root.targetView && !view.move.running && !view.moveDisplaced.running) {
-                const pos = mapToItem(view.contentItem, drag.x, drag.y)
-                const targetIndex = view.indexAt(pos.x, pos.y)
+            const targetView = source.targetView
+            if (source.targetView === root.targetView && !targetView.move.running && !targetView.moveDisplaced.running) {
+                const pos = mapToItem(targetView.contentItem, drag.x, drag.y)
+                const targetIndex = targetView.indexAt(pos.x, pos.y)
                 if (targetIndex >= 0 && targetIndex !== source.index) {
                     root.dragMoves.push([source.index, targetIndex])
-                    view.model.moveRow(source.index, targetIndex)
+                    targetView.model.moveRow(source.index, targetIndex)
                     // itemIndex changes directly after moving,
                     // we can just set the currentIndex to it then.
-                    view.currentIndex = source.index
+                    targetView.currentIndex = source.index
                 }
             }
             drag.accept(Qt.MoveAction)
         }
     }
     onDropped: drag => {
-        if ((drag.source !== kickoff.dragSource || kickoff.dragSource.sourceItem === null) && drag.hasUrls) {
-            const pos = mapToItem(view.contentItem, drag.x, drag.y)
-            let targetIndex = view.indexAt(pos.x, pos.y)
+        if ((drag.source !== root.kickoffItem.dragSource || root.kickoffItem.dragSource.sourceItem === null) && drag.hasUrls) {
+            const pos = mapToItem(targetView.contentItem, drag.x, drag.y)
+            let targetIndex = targetView.indexAt(pos.x, pos.y)
             if (targetIndex >= 0) {
                 for (const url of drag.urls) {
-                    view.model.addFavoriteTo(url, ":current", targetIndex++)
+                    targetView.model.addFavoriteTo(url, ":current", targetIndex++)
                 }
             } else {
                 for (const url of drag.urls) {
-                    view.model.addFavoriteTo(url, ":current")
+                    targetView.model.addFavoriteTo(url, ":current")
                 }
             }
         }
@@ -65,9 +66,9 @@ DropArea {
     onExited: {
         while (root.dragMoves.length > 0) {
             const [start, end] = root.dragMoves.pop()
-            view.model.moveRow(end, start)
+            targetView.model.moveRow(end, start)
         }
-        view.currentIndex = -1
+        targetView.currentIndex = -1
     }
 
     function moveRow(targetIndex) {
@@ -120,4 +121,3 @@ DropArea {
         running: root.enableAutoScroll && root.containsDrag && root.drag.y >= root.height - root.scrollDownMargin
     }
 }
-

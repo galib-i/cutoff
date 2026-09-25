@@ -21,6 +21,7 @@ RowLayout {
     id: root
 
     required property real maximumWidth
+    required property var kickoffItem
 
     // When all actions are configured as primary, none of them should be
     // hidden into the overflow menu as long as the available space allows
@@ -51,11 +52,11 @@ RowLayout {
         };
     }
 
-    spacing: kickoff.backgroundMetrics.spacing
+    spacing: root.kickoffItem.backgroundMetrics.spacing
 
     Kicker.SystemModel {
         id: systemModel
-        favoritesModel: kickoff.rootModel.systemFavoritesModel
+        favoritesModel: root.kickoffItem.rootModel.systemFavoritesModel
     }
 
     component FilteredModel : KItemModels.KSortFilterProxyModel {
@@ -67,9 +68,9 @@ RowLayout {
             return String(Plasmoid.configuration.systemFavorites).includes(favoriteId);
         }
 
-        function trigger(index) {
+        function trigger(index, actionId, actionArgument) {
             const sourceIndex = mapToSource(this.index(index, 0));
-            systemModel.trigger(sourceIndex.row, "", null);
+            return systemModel.trigger(sourceIndex.row, actionId || "", actionArgument || null);
         }
 
         Component.onCompleted: {
@@ -111,15 +112,16 @@ RowLayout {
 
             model: filteredButtonsModel
             delegate: PC3.ToolButton {
+                id: buttonDelegate
                 required property int index
                 required property var model
 
                 text: model.display
                 icon.name: model.decoration
                 onClicked: {
-                    filteredButtonsModel.trigger(index);
-                    if (kickoff.hideOnWindowDeactivate) {
-                        kickoff.closeMenu();
+                    filteredButtonsModel.trigger(buttonDelegate.index);
+                    if (root.kickoffItem.hideOnWindowDeactivate) {
+                        root.kickoffItem.closeMenu();
                     }
                 }
                 display: Plasmoid.configuration.showActionButtonCaptions ? PC3.AbstractButton.TextBesideIcon : PC3.AbstractButton.IconOnly;
@@ -130,8 +132,8 @@ RowLayout {
                 PC3.ToolTip.visible: display === PC3.AbstractButton.IconOnly && hovered
 
                 Keys.onTabPressed: event => {
-                    if (index === buttonRepeater.count - 1 && !root.__layout.overflowMenuButtonIsVisible) {
-                        kickoff.firstHeaderItem.forceActiveFocus(Qt.TabFocusReason)
+                    if (buttonDelegate.index === buttonRepeater.count - 1 && !root.__layout.overflowMenuButtonIsVisible) {
+                        root.kickoffItem.firstHeaderItem.forceActiveFocus(Qt.TabFocusReason)
                     } else {
                         event.accepted = false
                     }
@@ -139,14 +141,14 @@ RowLayout {
                 Keys.onLeftPressed: event => {
                     if (Application.layoutDirection === Qt.LeftToRight) {
                         nextItemInFocusChain(false).forceActiveFocus(Qt.BacktabFocusReason)
-                    } else if (index < buttonRepeater.count - 1 || root.__layout.overflowMenuButtonIsVisible) {
+                    } else if (buttonDelegate.index < buttonRepeater.count - 1 || root.__layout.overflowMenuButtonIsVisible) {
                         nextItemInFocusChain().forceActiveFocus(Qt.TabFocusReason)
                     }
                 }
                 Keys.onRightPressed: event => {
                     if (Application.layoutDirection === Qt.RightToLeft) {
                         nextItemInFocusChain(false).forceActiveFocus(Qt.BacktabFocusReason)
-                    } else if (index < buttonRepeater.count - 1 || root.__layout.overflowMenuButtonIsVisible) {
+                    } else if (buttonDelegate.index < buttonRepeater.count - 1 || root.__layout.overflowMenuButtonIsVisible) {
                         nextItemInFocusChain().forceActiveFocus(Qt.TabFocusReason)
                     }
                 }
@@ -168,11 +170,11 @@ RowLayout {
         icon.width: Kirigami.Units.iconSizes.smallMedium
         icon.height: Kirigami.Units.iconSizes.smallMedium
         icon.name: ["system-log-out", "system-shutdown", "view-more-symbolic", "view-more-symbolic"][Plasmoid.configuration.primaryActions]
-        text: [i18nc("@title:menu menubutton","Session"), i18nc("@title:menu menubutton", "Power"), i18nc("@title:menu menubutton", "More"), i18nc("@title:menu menubutton", "Session and Power")][Plasmoid.configuration.primaryActions]
+        text: [i18nc("@title:menu menubutton","Session"), i18nc("@title:menu menubutton", "Power"), i18nc("@title:menu menubutton", "More"), i18nc("@title:menu menubutton", "Session and Power")][Plasmoid.configuration.primaryActions] // qmllint disable unqualified
         // Make it look pressed while the menu is open
         down: contextMenu.status === PlasmaExtras.Menu.Open || pressed
         Keys.onTabPressed: event => {
-            kickoff.firstHeaderItem.forceActiveFocus(Qt.TabFocusReason);
+            root.kickoffItem.firstHeaderItem.forceActiveFocus(Qt.TabFocusReason);
         }
         Keys.onLeftPressed: event => {
             if (!mirrored) {
@@ -209,15 +211,16 @@ RowLayout {
     Instantiator {
         model: filteredMenuItemsModel
         delegate: PlasmaExtras.MenuItem {
+            id: menuDelegate
             required property int index
             required property var model
 
             text: model.display
             icon: model.decoration
             onClicked: {
-                filteredMenuItemsModel.trigger(index)
-                if (kickoff.hideOnWindowDeactivate) {
-                    kickoff.closeMenu();
+                filteredMenuItemsModel.trigger(menuDelegate.index)
+                if (root.kickoffItem.hideOnWindowDeactivate) {
+                    root.kickoffItem.closeMenu();
                 }
             }
         }

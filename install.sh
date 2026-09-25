@@ -50,7 +50,7 @@ _sudo() {
 
 install_widget() {
     echo "=> Installing $PLASMOID_NAME ($TARGET)..."
-    
+
     if [ "$TARGET" = "local" ]; then
         kpackagetool6 -t Plasma/Applet -i "$SCRIPT_DIR"
     else
@@ -60,7 +60,7 @@ install_widget() {
 
 update_widget() {
     echo "Updating $PLASMOID_NAME ($TARGET)..."
-    
+
     if [ "$TARGET" = "local" ]; then
         kpackagetool6 -t Plasma/Applet -u "$SCRIPT_DIR"
     else
@@ -79,13 +79,13 @@ uninstall_widget() {
 }
 
 case "$ACTION" in
-    install)   
-        install_widget 
+    install)
+        install_widget
         ;;
-    uninstall) 
-        uninstall_widget 
+    uninstall)
+        uninstall_widget
         ;;
-    update)    
+    update)
         update_widget
         echo "You may need to restart Plasma (log out/in or run: systemctl restart --user plasma-plasmashell.service) to see changes."
         ;;

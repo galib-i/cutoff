@@ -8,28 +8,12 @@ pragma Singleton // NOTE: Singletons are shared between all instances of a plasm
 import QtQuick
 import org.kde.kirigami as Kirigami
 import org.kde.ksvg as KSvg
-import org.kde.plasma.plasma5support as P5Support
 import org.kde.plasma.components as PC3
-
-// Using Item because it has a default property.
 // Trying to create a default property for a QtObject seems to cause segfaults.
 Item {
     id: root
 
     visible: false
-
-    //BEGIN Models and Data Sources
-    readonly property P5Support.DataSource powerManagement: P5Support.DataSource {
-        engine: "powermanagement"
-        connectedSources: ["PowerDevil"]
-        // For some reason, these signal handlers need to be here for `data` to actually contain data.
-        onSourceAdded: source => {
-            disconnectSource(source);
-            connectSource(source);
-        }
-        onSourceRemoved: source => disconnectSource(source);
-    }
-    //END
 
     //BEGIN Reusable Objects
     readonly property KSvg.Svg lineSvg: KSvg.Svg {
@@ -57,6 +41,7 @@ Item {
     //BEGIN Private
     KickoffGridDelegate {
         id: gridDelegate
+        kickoffItem: null
         visible: false
         enabled: false
         model: null
@@ -73,6 +58,7 @@ Item {
     }
     KickoffListDelegate {
         id: compactListDelegate
+        kickoffItem: null
         visible: false
         enabled: false
         compact: true

@@ -24,6 +24,10 @@ import org.kde.plasma.plasmoid
 T.ItemDelegate {
     id: root
 
+    required property var kickoffItem
+    property bool viewMovedWithWheel: false
+    property bool viewMovedWithKeyboard: false
+
     enum AppNameFormat {
         NameOnly,
         GenericNameOnly,
@@ -39,13 +43,16 @@ T.ItemDelegate {
     required property string description
     required property bool isMultilineText
 
-    readonly property Flickable view: ListView.view ?? GridView.view
+    function getView() { return ListView.view ?? GridView.view; }
+    readonly property var view: getView()
     property bool removalPlaceholderActive: false
     readonly property bool hasActionList: model && (model.favoriteId !== null || ("hasActionList" in model && model.hasActionList === true))
     property bool isSearchResult: false
 
     readonly property bool isSeparator: model && (model.isSeparator === true)
-    property int separatorHeight: (KickoffSingleton.lineSvg?.horLineHeight ?? 0) + (2 * Kirigami.Units.smallSpacing)
+
+    property int separatorHeight: (KickoffSingleton.lineSvg?.horLineHeight ?? 0) + (2 * Kirigami.Units.smallSpacing) // qmllint disable missing-property
+
     property int itemHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
 
     readonly property bool dragEnabled: enabled
@@ -67,9 +74,10 @@ T.ItemDelegate {
         if (!hasActionList) { return; }
 
         let actions = Array.from(model.actionList);
+        // qmllint disable unqualified
         const favoriteActions = Tools.createFavoriteActions(
             i18n, //i18n() function callback
-            kickoff.rootModel.favoritesModel,
+            root.kickoffItem.rootModel.favoritesModel,
             model.favoriteId,
         );
         if (favoriteActions) {
@@ -138,9 +146,13 @@ T.ItemDelegate {
             }
             root.view.currentIndex = root.index
             // if successfully triggered, close popup
+
+
             if (root.view.model.trigger && root.view.model.trigger(root.index, "", null)) {
-                if (kickoff.hideOnWindowDeactivate) {
-                    kickoff.closeMenu();
+
+
+                if (root.kickoffItem.hideOnWindowDeactivate) {
+                    root.kickoffItem.closeMenu();
                 }
             }
         }
@@ -148,21 +160,21 @@ T.ItemDelegate {
 
     function performDrag(handler: DragHandler): void {
         if (!handler.active) {
-            kickoff.dragSource.Drag.active = false;
-            kickoff.dragSource.Drag.imageSource = "";
-            kickoff.dragSource.sourceItem = null;
+            root.kickoffItem.dragSource.Drag.active = false;
+            root.kickoffItem.dragSource.Drag.imageSource = "";
+            root.kickoffItem.dragSource.sourceItem = null;
             return;
         }
         root.dragIconItem.grabToImage(result => {
             if (!handler.active) {
                 return;
             }
-            kickoff.dragSource.sourceItem = root;
-            kickoff.dragSource.Drag.imageSource = result.url;
-            kickoff.dragSource.Drag.mimeData = {
+            root.kickoffItem.dragSource.sourceItem = root;
+            root.kickoffItem.dragSource.Drag.imageSource = result.url;
+            root.kickoffItem.dragSource.Drag.mimeData = {
                 "text/uri-list" : [root.url]
             };
-            kickoff.dragSource.Drag.active = handler.active;
+            root.kickoffItem.dragSource.Drag.active = handler.active;
         });
     }
 
@@ -198,10 +210,10 @@ T.ItemDelegate {
         hoverEnabled: root.view
             // When the movedWithWheel condition is broken, this ensures that
             // onEntered is called again without moving the mouse.
-            && !root.view.movedWithWheel
+            && !root.viewMovedWithWheel
             // Fix VerticalStackView animation causing view currentIndex
             // to change while delegates are moving under the mouse cursor
-            && kickoff.realFullRep && !kickoff.realFullRep.contentItem.busy && !kickoff.realFullRep.blockingHoverFocus
+            && root.kickoffItem.realFullRep && !root.kickoffItem.realFullRep.contentItem.busy && !root.kickoffItem.realFullRep.blockingHoverFocus
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onEntered: {
@@ -209,7 +221,7 @@ T.ItemDelegate {
             //   select the hovered item without moving the mouse.
             // - Don't highlight separators.
             // - Don't switch category items on hover if the setting isn't enabled
-            if (root.view.movedWithKeyboard || root.isSeparator) {
+            if (root.viewMovedWithKeyboard || root.isSeparator) {
                 return
             }
 
@@ -217,7 +229,7 @@ T.ItemDelegate {
             // activeFocus first to be more efficient. Keep activeFocus
             // stable if it's on the searchField to avoid unintentional
             // activation with Space key presses.
-            if (!root.activeFocus && !kickoff.searchField?.activeFocus) {
+            if (!root.activeFocus && !root.kickoffItem.searchField?.activeFocus) {
                 root.forceActiveFocus(Qt.MouseFocusReason)
             }
             // No need to check currentIndex first because it's
@@ -268,7 +280,7 @@ T.ItemDelegate {
             pressed: root.down
 
             active: root.view.activeFocus ||
-                    (kickoff.contentArea === root && kickoff.searchField.activeFocus)
+                    (root.kickoffItem.contentArea === root && root.kickoffItem.searchField.activeFocus)
         }
     }
 }

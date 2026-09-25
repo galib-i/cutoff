@@ -23,14 +23,17 @@ import org.kde.kirigami as Kirigami
 EmptyPage {
     id: root
 
-    property alias model: view.model
-    property alias count: view.count
-    property alias currentIndex: view.currentIndex
-    property alias currentItem: view.currentItem
-    property alias delegate: view.delegate
-    property alias section: view.section
-    property alias highlight: view.highlight
-    property alias view: view
+    required property var kickoffItem
+
+    property alias model: listViewItem.model
+    property alias count: listViewItem.count
+    property alias currentIndex: listViewItem.currentIndex
+    property alias currentItem: listViewItem.currentItem
+    property alias delegate: listViewItem.delegate
+    property alias section: listViewItem.section
+    property alias view: listViewItem
+    property alias movedWithWheel: listViewItem.movedWithWheel
+    property alias movedWithKeyboard: listViewItem.movedWithKeyboard
 
     property bool mainContentView: false
     property bool hasSectionView: false
@@ -39,17 +42,17 @@ EmptyPage {
      * Request showing the section view
      */
 
-    clip: view.height < view.contentHeight
+    clip: listViewItem.height < listViewItem.contentHeight
 
     header: MouseArea {
         implicitHeight: KickoffSingleton.listItemMetrics?.fixedMargins.top ?? 0
         hoverEnabled: root.mainContentView || Plasmoid.configuration.switchCategoryOnHover
         onEntered: {
             if (containsMouse) {
-                const targetIndex = view.indexAt(mouseX + view.contentX, view.contentY)
+                const targetIndex = listViewItem.indexAt(mouseX + listViewItem.contentX, listViewItem.contentY)
                 if (targetIndex >= 0) {
-                    view.currentIndex = targetIndex
-                    view.forceActiveFocus(Qt.MouseFocusReason)
+                    listViewItem.currentIndex = targetIndex
+                    listViewItem.forceActiveFocus(Qt.MouseFocusReason)
                 }
             }
         }
@@ -60,10 +63,10 @@ EmptyPage {
         hoverEnabled: root.mainContentView || Plasmoid.configuration.switchCategoryOnHover
         onEntered: {
             if (containsMouse) {
-                const targetIndex = view.indexAt(mouseX + view.contentX, view.height + view.contentY - 1)
+                const targetIndex = listViewItem.indexAt(mouseX + listViewItem.contentX, listViewItem.height + listViewItem.contentY - 1)
                 if (targetIndex >= 0) {
-                    view.currentIndex = targetIndex
-                    view.forceActiveFocus(Qt.MouseFocusReason)
+                    listViewItem.currentIndex = targetIndex
+                    listViewItem.forceActiveFocus(Qt.MouseFocusReason)
                 }
             }
         }
@@ -78,7 +81,7 @@ EmptyPage {
     rightPadding: verticalScrollBar.visible && !root.mirrored ? verticalScrollBar.implicitWidth : 0
 
     contentItem: ListView {
-        id: view
+        id: listViewItem
 
         readonly property real availableWidth: width - leftMargin - rightMargin
         readonly property real availableHeight: height - topMargin - bottomMargin
@@ -90,21 +93,21 @@ EmptyPage {
         implicitWidth: {
             let totalMargins = leftMargin + rightMargin
             if (root.mainContentView) {
-                if (kickoff.mayHaveGridWithScrollBar) {
+                if (root.kickoffItem.mayHaveGridWithScrollBar) {
                     totalMargins += verticalScrollBar.implicitWidth
                 }
-                return KickoffSingleton.gridCellSize * kickoff.minimumGridRowCount + totalMargins
+                return KickoffSingleton.gridCellSize * root.kickoffItem.minimumGridRowCount + totalMargins
             }
             return contentWidth + totalMargins
         }
         implicitHeight: {
             // use grid cells to determine size
-            let h = KickoffSingleton.gridCellSize * kickoff.minimumGridRowCount
+            let h = KickoffSingleton.gridCellSize * root.kickoffItem.minimumGridRowCount
             return h + topMargin + bottomMargin
         }
 
-        leftMargin: kickoff.backgroundMetrics.leftPadding
-        rightMargin: kickoff.backgroundMetrics.rightPadding
+        leftMargin: root.kickoffItem.backgroundMetrics.leftPadding
+        rightMargin: root.kickoffItem.backgroundMetrics.rightPadding
 
         currentIndex: -1
         focus: true
@@ -116,10 +119,16 @@ EmptyPage {
         // and eats up/down key events when at the beginning or end of the list.
         keyNavigationEnabled: false
         keyNavigationWraps: false
-
-        // This is actually needed. The highlight will animate from thin to wide otherwise.
         highlightResizeDuration: 0
         highlightFollowsCurrentItem: false
+
+        HoverHandler {
+            onHoveredChanged: {
+                if (!hovered && !listViewItem.movedWithKeyboard) {
+                    listViewItem.currentIndex = -1;
+                }
+            }
+        }
 
         onCountChanged: {
             if (!activeFocus) {
@@ -130,7 +139,12 @@ EmptyPage {
         }
 
         delegate: KickoffListDelegate {
-            width: view.availableWidth
+                viewMovedWithWheel: root.movedWithWheel
+                viewMovedWithKeyboard: root.movedWithKeyboard
+                kickoffItem: root.kickoffItem
+
+                width: listViewItem.availableWidth // qmllint disable missing-property
+
         }
 
         // Without switch-on-hover, it's possible for the selected category and the hovered category to be adjacent.
@@ -143,7 +157,9 @@ EmptyPage {
             delegate: PlasmaExtras.ListSectionHeader {
                 required property string section
 
-                width: view.availableWidth
+
+                width: listViewItem.availableWidth // qmllint disable missing-property
+
                 height: KickoffSingleton.compactListDelegateHeight
                 text: section.length === 1 ? section.toUpperCase() : section
 
@@ -178,31 +194,33 @@ EmptyPage {
         }
 
         Kirigami.WheelHandler {
-            target: view
+            target: listViewItem
             filterMouseEvents: true
             // `20 * Qt.styleHints.wheelScrollLines` is the default speed.
-            horizontalStepSize: 20 * Qt.styleHints.wheelScrollLines
-            verticalStepSize: 20 * Qt.styleHints.wheelScrollLines
+
+            horizontalStepSize: 20 * Qt.styleHints.wheelScrollLines // qmllint disable missing-property
+            verticalStepSize: 20 * Qt.styleHints.wheelScrollLines // qmllint disable missing-property
+
 
             onWheel: wheel => {
-                view.movedWithWheel = true
-                view.movedWithKeyboard = false
+                listViewItem.movedWithWheel = true // qmllint disable missing-property
+                listViewItem.movedWithKeyboard = false // qmllint disable missing-property
                 movedWithWheelTimer.restart()
             }
         }
 
         Connections {
-            target: kickoff
+            target: root.kickoffItem
             function onIsMenuOpenChanged() {
-                if (!kickoff.isMenuOpen) {
-                    view.currentIndex = -1
-                    view.contentY = view.originY
+                if (!root.kickoffItem.isMenuOpen) {
+                    listViewItem.currentIndex = -1
+                    listViewItem.contentY = listViewItem.originY
                 }
             }
         }
 
         Connections {
-            target: kickoff.runnerModel
+            target: root.kickoffItem.runnerModel
             enabled: launchMatchTimer.running
             function onQueryFinished() : void {
                 launchMatchTimer.stop()
@@ -216,56 +234,60 @@ EmptyPage {
         Timer {
             id: movedWithKeyboardTimer
             interval: 200
-            onTriggered: view.movedWithKeyboard = false
+            onTriggered: listViewItem.movedWithKeyboard = false // qmllint disable missing-property
         }
 
         Timer {
             id: movedWithWheelTimer
             interval: 200
-            onTriggered: view.movedWithWheel = false
+            onTriggered: listViewItem.movedWithWheel = false // qmllint disable missing-property
         }
 
         Timer {
             id: launchMatchTimer
             interval: 750
             onTriggered: {
-                view.currentItem?.action.trigger();
-                currentItem.forceActiveFocus(Qt.ShortcutFocusReason);
+
+                listViewItem.currentItem?.action.trigger(); // qmllint disable missing-property
+
+                root.currentItem.forceActiveFocus(Qt.ShortcutFocusReason);
             }
         }
 
         onCurrentItemChanged: {
-            if (launchMatchTimer.running && view.currentItem?.text.toLowerCase().includes(kickoff.runnerModel.query.toLowerCase())) {
+
+            if (launchMatchTimer.running && listViewItem.currentItem?.text.toLowerCase().includes(root.kickoffItem.runnerModel.query.toLowerCase())) { // qmllint disable missing-property
+
                 launchMatchTimer.stop()
                 launchMatchTimer.triggered()
             }
         }
 
         function focusCurrentItem(event, focusReason) {
-            currentItem.forceActiveFocus(focusReason)
+            root.currentItem.forceActiveFocus(focusReason)
             positionViewAtIndex(currentIndex, ListView.Contain)
             event.accepted = true
         }
 
         Keys.onMenuPressed: event => {
-            const delegate = currentItem as AbstractKickoffItemDelegate;
+            const delegate = root.currentItem as AbstractKickoffItemDelegate;
             if (delegate !== null) {
                 delegate.forceActiveFocus(Qt.ShortcutFocusReason)
                 delegate.openActionMenu()
             }
         }
         Keys.onPressed: event => {
-            const targetX = currentItem ? currentItem.x : contentX
-            let targetY = currentItem ? currentItem.y : contentY
+            const targetX = root.currentItem ? root.currentItem.x : contentX
+            let targetY = root.currentItem ? root.currentItem.y : contentY
             let targetIndex = currentIndex
             const atFirst = currentIndex === 0
             const atLast = currentIndex === count - 1
-            if (count >= 1 || (kickoff.runnerModel.querying && [Qt.Key_Return, Qt.Key_Enter].includes(event.key))) {
+            if (count >= 1 || (root.kickoffItem.runnerModel.querying && [Qt.Key_Return, Qt.Key_Enter].includes(event.key))) {
                 switch (event.key) {
                     case Qt.Key_Up: if (!atFirst) {
                         decrementCurrentIndex()
 
-                        if ((currentItem as AbstractKickoffItemDelegate)?.isSeparator) {
+                        if ((root.currentItem as AbstractKickoffItemDelegate)?.isSeparator) {
                             decrementCurrentIndex()
                         }
 
@@ -278,7 +300,7 @@ EmptyPage {
                     case Qt.Key_Down: if (!atLast) {
                         incrementCurrentIndex()
 
-                        if ((currentItem as AbstractKickoffItemDelegate)?.isSeparator) {
+                        if ((root.currentItem as AbstractKickoffItemDelegate)?.isSeparator) {
                             incrementCurrentIndex()
                         }
 
@@ -324,7 +346,9 @@ EmptyPage {
                         if (launchMatchTimer.running) {
                             launchMatchTimer.stop()
                             launchMatchTimer.triggered()
-                        } else if (!kickoff.runnerModel.querying || view.currentItem?.text.toLowerCase().includes(kickoff.runnerModel.query.toLowerCase())) {
+
+                        } else if (!root.kickoffItem.runnerModel.querying || listViewItem.currentItem?.text.toLowerCase().includes(root.kickoffItem.runnerModel.query.toLowerCase())) { // qmllint disable missing-property
+
                             launchMatchTimer.triggered()
                         } else {
                             launchMatchTimer.start()

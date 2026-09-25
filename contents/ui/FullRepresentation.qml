@@ -22,12 +22,14 @@ import org.kde.plasma.extras as PlasmaExtras
 EmptyPage {
     id: root
 
+    required property var kickoffItem
+
     // kickoff is Kickoff.qml
-    leftPadding: -kickoff.backgroundMetrics.leftPadding
-    rightPadding: -kickoff.backgroundMetrics.rightPadding
+    leftPadding: -root.kickoffItem.backgroundMetrics.leftPadding
+    rightPadding: -root.kickoffItem.backgroundMetrics.rightPadding
     topPadding: 0
-    bottomPadding: -kickoff.backgroundMetrics.bottomPadding
-    readonly property var appletInterface: kickoff
+    bottomPadding: -root.kickoffItem.backgroundMetrics.bottomPadding
+    readonly property var appletInterface: root.kickoffItem
 
     Layout.minimumWidth: Kirigami.Units.gridUnit * 10
     Layout.minimumHeight: Kirigami.Units.gridUnit * 10
@@ -73,8 +75,9 @@ EmptyPage {
 
     header: Header {
         id: header
+        kickoffItem: root.kickoffItem
         Binding {
-            target: kickoff
+            target: root.kickoffItem
             property: "header"
             value: header
             restoreMode: Binding.RestoreBinding
@@ -91,6 +94,7 @@ EmptyPage {
         initialItem: NormalPage {
             id: normalPage
             objectName: "normalPage"
+            kickoffItem: root.kickoffItem
         }
 
         Component {
@@ -98,28 +102,34 @@ EmptyPage {
             KickoffListView {
                 id: searchView
                 objectName: "searchView"
+                kickoffItem: root.kickoffItem
                 mainContentView: true
                 // Forces the function be re-run every time runnerModel.count changes.
                 // This is absolutely necessary to make the search view work reliably.
-                model: kickoff.runnerModel.count ? kickoff.runnerModel.modelForRow(0) : null
+                model: root.kickoffItem.runnerModel.count ? root.kickoffItem.runnerModel.modelForRow(0) : null
                 delegate: KickoffListDelegate {
-                    width: view.availableWidth
+                    viewMovedWithWheel: searchView.movedWithWheel
+                    viewMovedWithKeyboard: searchView.movedWithKeyboard
+                    kickoffItem: root.kickoffItem
+
+                    width: searchView.view.availableWidth // qmllint disable missing-property
+
                     isSearchResult: true
                 }
                 section.property: "group"
                 activeFocusOnTab: true
                 Keys.onTabPressed: event => {
-                    kickoff.firstHeaderItem.forceActiveFocus(Qt.TabFocusReason);
+                    root.kickoffItem.firstHeaderItem.forceActiveFocus(Qt.TabFocusReason);
                 }
                 Keys.onBacktabPressed: event => {
-                    kickoff.lastHeaderItem.forceActiveFocus(Qt.BacktabFocusReason);
+                    root.kickoffItem.lastHeaderItem.forceActiveFocus(Qt.BacktabFocusReason);
                 }
                 Keys.onUpPressed: event => {
-                    kickoff.searchField.forceActiveFocus(Qt.BacktabFocusReason)
+                    root.kickoffItem.searchField.forceActiveFocus(Qt.BacktabFocusReason)
                 }
                 T.StackView.onStatusChanged: {
                     if (T.StackView.status === T.StackView.Activating) {
-                        kickoff.contentArea = searchView
+                        root.kickoffItem.contentArea = searchView
                     }
                 }
 
@@ -136,10 +146,10 @@ EmptyPage {
 
                         iconName: "edit-none"
                         opacity: 0
-                        text: i18nc("@info:status", "No matches")
+                        text: i18nc("@info:status", "No matches") // qmllint disable unqualified
 
                         Connections {
-                            target: kickoff.runnerModel
+                            target: root.kickoffItem.runnerModel
                             function onQueryFinished() {
                                 showAnimation.restart()
                             }
@@ -159,9 +169,9 @@ EmptyPage {
         }
 
         Connections {
-            target: kickoff
+            target: root.kickoffItem
             function onIsMenuOpenChanged() {
-                if (!kickoff.isMenuOpen) {
+                if (!root.kickoffItem.isMenuOpen) {
                     root.blockingHoverFocus = true
                     root.interceptedPosition = null
                 }
@@ -195,7 +205,7 @@ EmptyPage {
         Keys.priority: Keys.AfterItem
         // This is here rather than root because events are implicitly forwarded
         // to parent items. Don't want to send multiple events to searchField.
-        Keys.forwardTo: kickoff.searchField
+        Keys.forwardTo: root.kickoffItem.searchField
 
         Connections {
             target: root.header
@@ -219,16 +229,18 @@ EmptyPage {
     }
 
     Loader {
-        active: !!kickoff.dragSource.sourceItem
+        active: !!root.kickoffItem.dragSource.sourceItem
         anchors.fill: parent
         sourceComponent: DropArea {
             id: favoriteRemoveDropArea
 
             // should be  "as AbstractKickoffItemDelegate", but the type system gets confused when changing view style at runtime
-            readonly property Item draggedItem: kickoff.dragSource.sourceItem
+            readonly property var draggedItem: root.kickoffItem.dragSource.sourceItem
 
             onEntered: event => {
-                if (draggedItem?.view.model instanceof Kicker.KAStatsFavoritesModel) {
+
+                if (draggedItem?.view.model instanceof Kicker.KAStatsFavoritesModel) { // qmllint disable missing-property
+
                     event.accept (Qt.MoveAction)
                     draggedItem.removalPlaceholderActive = true
                 } else {
@@ -237,8 +249,10 @@ EmptyPage {
             }
 
             onDropped: event => {
-                if (draggedItem && kickoff.rootModel.favoritesModel.isFavorite(draggedItem.model.favoriteId) && draggedItem.view.model instanceof Kicker.KAStatsFavoritesModel) {
-                    kickoff.rootModel.favoritesModel.removeFavorite(draggedItem.model.favoriteId);
+
+                if (draggedItem && root.kickoffItem.rootModel.favoritesModel.isFavorite(draggedItem.model.favoriteId) && draggedItem.view.model instanceof Kicker.KAStatsFavoritesModel) { // qmllint disable missing-property
+
+                    root.kickoffItem.rootModel.favoritesModel.removeFavorite(draggedItem.model.favoriteId);
                     event.accept(Qt.MoveAction)
                 } else {
                     draggedItem.removalPlaceholderActive = false
@@ -255,6 +269,6 @@ EmptyPage {
     }
 
     Component.onCompleted: {
-        rootModel.refresh();
+        root.kickoffItem.rootModel.refresh();
     }
 }

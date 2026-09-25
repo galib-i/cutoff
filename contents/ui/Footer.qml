@@ -15,14 +15,16 @@ import org.kde.kirigami as Kirigami
 PlasmaExtras.PlasmoidHeading {
     id: root
 
+    required property var kickoffItem
+
     readonly property alias leaveButtons: leaveButtons
 
     contentWidth: spacing
     contentHeight: leaveButtons.implicitHeight
 
     // We use an increased vertical padding to improve touch usability
-    leftPadding: kickoff.backgroundMetrics.leftPadding
-    rightPadding: kickoff.backgroundMetrics.rightPadding
+    leftPadding: root.kickoffItem.backgroundMetrics.leftPadding
+    rightPadding: root.kickoffItem.backgroundMetrics.rightPadding
     topPadding: Kirigami.Units.smallSpacing * 2
     bottomPadding: Kirigami.Units.smallSpacing * 2
 
@@ -31,11 +33,12 @@ PlasmaExtras.PlasmoidHeading {
     rightInset: 0
     bottomInset: 0
 
-    spacing: kickoff.backgroundMetrics.spacing
+    spacing: root.kickoffItem.backgroundMetrics.spacing
     position: PC3.ToolBar.Footer
 
     LeaveButtons {
         id: leaveButtons
+        kickoffItem: root.kickoffItem
 
         anchors {
             top: parent.top
@@ -44,15 +47,17 @@ PlasmaExtras.PlasmoidHeading {
         }
 
         // available width for leaveButtons
-        maximumWidth: root.availableWidth - root.spacing
+
+        maximumWidth: root.availableWidth - root.spacing // qmllint disable missing-property
+
 
         Keys.onUpPressed: event => {
-            kickoff.lastCentralPane.forceActiveFocus(Qt.BacktabFocusReason);
+            root.kickoffItem.lastCentralPane.forceActiveFocus(Qt.BacktabFocusReason);
         }
     }
 
     Behavior on height {
-        enabled: kickoff.isMenuOpen
+        enabled: root.kickoffItem.isMenuOpen
         NumberAnimation {
             duration: Kirigami.Units.longDuration
             easing.type: Easing.InQuad

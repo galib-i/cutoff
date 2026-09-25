@@ -21,7 +21,5 @@
   },
   "X-Plasma-API-Minimum-Version": "6.0",
   "X-Plasma-MainScript": "ui/main.qml",
-  "X-Plasma-Provides": [
-    "org.kde.plasma.launchermenu"
-  ]
+  "X-Plasma-Provides": ["org.kde.plasma.launchermenu"]
 }

@@ -9,14 +9,18 @@ import QtQuick
 
 EmptyPage {
     id: root
+    required property var kickoffItem
+
     contentItem: ApplicationsPage {
         id: applicationsPage
+        kickoffItem: root.kickoffItem
     }
 
     footer: Footer {
         id: footer
+        kickoffItem: root.kickoffItem
         Binding {
-            target: kickoff
+            target: root.kickoffItem
             property: "footer"
             value: footer
             restoreMode: Binding.RestoreBinding

@@ -8,12 +8,11 @@ KDE Plasma's Application Launcher, but just the list.
 
 > [!NOTE]
 > A fork of [Kickoff](https://invent.kde.org/plasma/plasma-desktop/-/tree/master/applets/kickoff) by Martin Gräßlin and Mikel Johnson.<br>
-> *Requires KDE Plasma 6.0+.*
+> _Requires KDE Plasma 6.0+._
 
 - Just a single alphabetical list with Favourites pinned to the top.
 - KRunner search bar.
 - Resizable standard and pop-up views.
-
 
 ## Get Started
 
@@ -32,9 +31,10 @@ cd cutoff
 ./install.sh install global     # /usr/share/plasma/plasmoids, with sudo
 ```
 
-Once installed, either: 
-- Right-click your current menu and select *Show alternatives...*.
-- Right-click the desktop or a panel, select *Add Widgets*, and search for "Cutoff".
+Once installed, either:
+
+- Right-click your current menu and select _Show alternatives..._.
+- Right-click the desktop or a panel, select _Add Widgets_, and search for "Cutoff".
 
 To update or remove it:
 
@@ -42,15 +42,17 @@ To update or remove it:
 ./install.sh update local      # or ./install.sh update global, with sudo
 ./install.sh uninstall local   # or ./install.sh uninstall global, with sudo
 ```
+
 > [!TIP]
 > You may need to restart Plasma (log out/in, or run `systemctl restart --user plasma-plasmashell.service`) to see changes.
 
 ## Configuration
 
-Right-click the widget and choose *Configure Cutoff…*:
+Right-click the widget and choose _Configure Cutoff…_:
 <p align="center">
   <img width="500" alt="Cutoff configurations" src="https://github.com/user-attachments/assets/a249dce0-f599-4ca8-a117-cc7625dd8780" />
 </p>
 
 ##
-*Licensed under the [GPLv2 or later](LICENSE), inheriting from the original source code.*
+
+_Licensed under the [GPLv2 or later](LICENSE), inheriting from the original source code._

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.0-or-later
  */
 
-////pragma ComponentBehavior: Bound
+pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Templates as T
@@ -13,19 +13,19 @@ import org.kde.plasma.extras as PlasmaExtras
 import org.kde.kitemmodels as KItemModels
 
 BasePage {
+    id: root
     KItemModels.KSortFilterProxyModel {
         id: sortedFavoritesModel
-        sourceModel: kickoff.rootModel.favoritesModel
+        sourceModel: root.kickoffItem.rootModel.favoritesModel
         sortRole: KItemModels.KRoleNames.role("display")
         sortOrder: Qt.AscendingOrder
 
-        function trigger(index) {
+        function trigger(index, actionId, actionArgument) {
             const sourceIndex = mapToSource(this.index(index, 0));
-            kickoff.rootModel.favoritesModel.trigger(sourceIndex.row, "", null);
+            return root.kickoffItem.rootModel.favoritesModel.trigger(sourceIndex.row, actionId || "", actionArgument || null);
         }
 
     }
-    id: root
 
     property real flashFavorite: 0
 
@@ -53,7 +53,7 @@ BasePage {
     }
 
     Connections {
-        target: kickoff.rootModel.favoritesModel
+        target: root.kickoffItem.rootModel.favoritesModel
         function onFavoriteAdded() : void {
             flashFavoriteAnimation.restart();
         }
@@ -101,9 +101,9 @@ BasePage {
 
 
         property int appsModelRow: 1
-        readonly property Kicker.AppsModel appsModel: kickoff.rootModel.modelForRow(appsModelRow)
+        readonly property Kicker.AppsModel appsModel: root.kickoffItem.rootModel.modelForRow(appsModelRow)
         Connections {
-            target: kickoff.rootModel
+            target: root.kickoffItem.rootModel
             function onRefreshed() { // recalculate appsModel binding on rootModel refresh;
                 stackView.appsModelRowChanged() // modelForRow does not create dependency
             }
@@ -116,6 +116,7 @@ BasePage {
 
             KickoffListView {
                 id: applicationsListView
+                kickoffItem: root.kickoffItem
                 objectName: "applicationsListView"
                 mainContentView: true
                 model: stackView.appsModel
@@ -125,12 +126,15 @@ BasePage {
 
                 view.header: Component {
                     Column {
-                        width: applicationsListView.view.availableWidth
+
+                                width: applicationsListView.view.availableWidth // qmllint disable missing-property
+
                         visible: stackView.appsModelRow === 1 && favoritesRepeater.count > 0
+                        height: visible ? implicitHeight : 0
 
                         PlasmaExtras.ListSectionHeader {
                             width: parent.width
-                            text: i18n("Favorites")
+                            text: i18n("Favorites") // qmllint disable unqualified
                         }
 
                         ListView {
@@ -140,8 +144,11 @@ BasePage {
                             interactive: false
                             model: sortedFavoritesModel
                             delegate: KickoffListDelegate {
+                                kickoffItem: root.kickoffItem
                                 id: favDelegate
-                                width: applicationsListView.view.availableWidth
+
+                                width: applicationsListView.view.availableWidth // qmllint disable missing-property
+
 
                                 mouseArea.onEntered: {
                                     applicationsListView.view.currentIndex = -1
@@ -149,10 +156,10 @@ BasePage {
 
                                 action: T.Action {
                                     onTriggered: {
-                                        if (kickoff.rootModel.favoritesModel.trigger) {
-                                            sortedFavoritesModel.trigger(index)
-                                            if (kickoff.hideOnWindowDeactivate) {
-                                                kickoff.closeMenu();
+                                        if (root.kickoffItem.rootModel.favoritesModel.trigger) {
+                                            sortedFavoritesModel.trigger(favDelegate.index)
+                                            if (root.kickoffItem.hideOnWindowDeactivate) {
+                                                root.kickoffItem.closeMenu();
                                             }
                                         }
                                     }
@@ -169,7 +176,7 @@ BasePage {
 
                         PlasmaExtras.ListSectionHeader {
                             width: parent.width
-                            text: i18n("All Applications")
+                            text: i18n("All Applications") // qmllint disable unqualified
                         }
                     }
                 }
@@ -177,10 +184,12 @@ BasePage {
         }
 
         Connections {
-            target: kickoff
+            target: root.kickoffItem
             function onIsMenuOpenChanged() {
-                if (!kickoff.isMenuOpen && kickoff.contentArea && kickoff.contentArea.currentItem) {
-                    kickoff.contentArea.currentItem.forceActiveFocus()
+
+                if (!root.kickoffItem.isMenuOpen && root.kickoffItem.contentArea && root.kickoffItem.contentArea.currentItem) { // qmllint disable missing-property
+                    root.kickoffItem.contentArea.currentItem.forceActiveFocus()
+
                 }
             }
         }
@@ -189,9 +198,11 @@ BasePage {
     // StackView.status and visible. This way the bindings are reset when
     // NormalPage is Activated again.
         Binding {
-        target: kickoff
+        target: root.kickoffItem
         property: "contentArea"
-        value: root.contentAreaItem ? root.contentAreaItem.currentItem : null
+
+        value: root.contentAreaItem ? root.contentAreaItem.currentItem : null // qmllint disable missing-property
+
         when: root.T.StackView.status === T.StackView.Active && root.visible
         restoreMode: Binding.RestoreBinding
     }

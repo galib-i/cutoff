@@ -58,7 +58,7 @@ AbstractKickoffItemDelegate {
                 sourceComponent: Kirigami.Badge {
                     text: ""
                     type: Kirigami.Badge.Type.Positive
-                    Accessible.name: i18nc("@label Accessible name for badge", "Newly-installed application")
+                    Accessible.name: i18nc("@label Accessible name for badge", "Newly-installed application") // qmllint disable unqualified
                 }
             }
         }

@@ -19,16 +19,18 @@ import org.kde.plasma.plasmoid
 PlasmaExtras.PlasmoidHeading {
     id: root
 
+    required property var kickoffItem
+
     property alias searchText: searchField.text
     property Item configureButton: configureButton
     property Item pinButton: pinButton
     property Item avatar: searchField
 
     contentHeight: layoutContainer.height
-        + kickoff.backgroundMetrics.topPadding
-        + kickoff.backgroundMetrics.bottomPadding
+        + root.kickoffItem.backgroundMetrics.topPadding
+        + root.kickoffItem.backgroundMetrics.bottomPadding
 
-    spacing: kickoff.backgroundMetrics.spacing
+    spacing: root.kickoffItem.backgroundMetrics.spacing
 
     function tabSetFocus(event, invertedTarget, normalTarget) {
         // Set input focus depending on whether layout order matches focus chain order
@@ -49,9 +51,9 @@ PlasmaExtras.PlasmoidHeading {
             anchors {
                 verticalCenter: parent.verticalCenter
                 left: parent.left
-                leftMargin: kickoff.backgroundMetrics.leftPadding
+                leftMargin: root.kickoffItem.backgroundMetrics.leftPadding
                 right: parent.right
-                rightMargin: kickoff.backgroundMetrics.rightPadding
+                rightMargin: root.kickoffItem.backgroundMetrics.rightPadding
             }
 
             Keys.forwardTo: searchField.activeFocus ? null : searchField
@@ -66,27 +68,27 @@ PlasmaExtras.PlasmoidHeading {
                 }
 
                 Keys.onDownPressed: event => {
-                    kickoff.contentArea.forceActiveFocus(Qt.TabFocusReason);
+                    root.kickoffItem.contentArea.forceActiveFocus(Qt.TabFocusReason);
                 }
 
                 PlasmaExtras.SearchField {
                     id: searchField
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                     Layout.fillWidth: true
-                    Layout.leftMargin: kickoff.backgroundMetrics.leftPadding
+                    Layout.leftMargin: root.kickoffItem.backgroundMetrics.leftPadding
                     focus: true
 
                     Binding {
-                        target: kickoff
+                        target: root.kickoffItem
                         property: "searchField"
                         value: searchField
                         // there's only one header ever, so don't waste resources
                         restoreMode: Binding.RestoreNone
                     }
                     Connections {
-                        target: kickoff
+                        target: root.kickoffItem
                         function onIsMenuOpenChanged() {
-                            if (!kickoff.isMenuOpen) {
+                            if (!root.kickoffItem.isMenuOpen) {
                                 searchField.clear()
                             }
                         }
@@ -96,21 +98,17 @@ PlasmaExtras.PlasmoidHeading {
                     }
                     Keys.priority: Keys.AfterItem
                     Keys.forwardTo: {
-                        if (kickoff.contentArea === null) {
+                        if (root.kickoffItem.contentArea === null) {
                             return []
                         }
-                        if (kickoff.contentArea instanceof ListOfGridsView) {
-                            // forward to grid inside of list, or down will skip the whole grid'
-                            return [kickoff.contentArea.view.currentItem?.view, kickoff.contentArea.view]
-                        }
-                        return kickoff.contentArea.view
+                        return root.kickoffItem.contentArea.view
                     }
 
                     Keys.onTabPressed: event => {
-                        tabSetFocus(event, nextItemInFocusChain(false));
+                        root.tabSetFocus(event, nextItemInFocusChain(false));
                     }
                     Keys.onBacktabPressed: event => {
-                        tabSetFocus(event, nextItemInFocusChain());
+                        root.tabSetFocus(event, nextItemInFocusChain());
                     }
                     Keys.onLeftPressed: event => {
                     }
@@ -134,10 +132,10 @@ PlasmaExtras.PlasmoidHeading {
                     PC3.ToolTip.delay: Kirigami.Units.toolTipDelay
                     PC3.ToolTip.visible: hovered
                     Keys.onTabPressed: event => {
-                        tabSetFocus(event, nextItemInFocusChain(false));
+                        root.tabSetFocus(event, nextItemInFocusChain(false));
                     }
                     Keys.onBacktabPressed: event => {
-                        tabSetFocus(event, nextItemInFocusChain());
+                        root.tabSetFocus(event, nextItemInFocusChain());
                     }
                     Keys.onLeftPressed: event => {
                         searchField.forceActiveFocus(
@@ -147,30 +145,33 @@ PlasmaExtras.PlasmoidHeading {
                         pinButton.forceActiveFocus(
                             Application.layoutDirection == Qt.RightToLeft ? Qt.BacktabFocusReason : Qt.TabFocusReason)
                     }
-                    onClicked: plasmoid.internalAction("configure").trigger()
+                    onClicked: {
+                        root.kickoffItem.closeMenu()
+                        Plasmoid.internalAction("configure").trigger()
+                    }
                 }
                 PC3.ToolButton {
                     id: pinButton
                     checkable: true
                     checked: Plasmoid.configuration.pin
                     icon.name: "window-pin"
-                    text: i18nc("@action:button Pin widget open if it loses focus, icon-only button, for tooltip/Accessible", "Keep Open")
+                    text: i18nc("@action:button Pin widget open if it loses focus, icon-only button, for tooltip/Accessible", "Keep Open") // qmllint disable unqualified
                     display: PC3.ToolButton.IconOnly
                     PC3.ToolTip.text: text
                     PC3.ToolTip.delay: Kirigami.Units.toolTipDelay
                     PC3.ToolTip.visible: hovered
                     Binding {
-                        target: kickoff
+                        target: root.kickoffItem
                         property: "hideOnWindowDeactivate"
                         value: !pinButton.checked
                         // there should be no other bindings, so don't waste resources
                         restoreMode: Binding.RestoreNone
                     }
                     Keys.onTabPressed: event => {
-                        tabSetFocus(event, nextItemInFocusChain(false), kickoff.firstCentralPane || nextItemInFocusChain());
+                        root.tabSetFocus(event, nextItemInFocusChain(false), root.kickoffItem.firstCentralPane || nextItemInFocusChain());
                     }
                     Keys.onBacktabPressed: event => {
-                        tabSetFocus(event, nextItemInFocusChain(false), nextItemInFocusChain(false));
+                        root.tabSetFocus(event, nextItemInFocusChain(false), nextItemInFocusChain(false));
                     }
                     Keys.onLeftPressed: event => {
                         nextItemInFocusChain(false).forceActiveFocus(Application.layoutDirection == Qt.RightToLeft ? Qt.TabFocusReason : Qt.BacktabFocusReason)
