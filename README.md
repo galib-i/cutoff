@@ -1,8 +1,9 @@
+
 # Cutoff
 
 KDE Plasma's Application Launcher, but just the list.
 <p align="center">
-  <img width="500" alt="Pop-up Cutoff" src="https://github.com/user-attachments/assets/7c328455-5241-4258-a8e7-f709fdd8c8ca" />
+  <img width="700" alt="New Project" src="https://github.com/user-attachments/assets/bd972408-4b75-4889-b3b6-381b5a54ceb5" />
 </p>
 
 > [!NOTE]
