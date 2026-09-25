@@ -125,26 +125,6 @@ PlasmoidItem {
         favoritesModel: kickoff.rootModel.favoritesModel
     }
 
-    readonly property Kicker.ComputerModel computerModel: Kicker.ComputerModel {
-        appletInterface: kickoff
-        favoritesModel: kickoff.rootModel.favoritesModel
-        Component.onCompleted: {
-            //systemApplications = Plasmoid.configuration.systemApplications;
-        }
-    }
-
-    readonly property alias recentUsageModel: recentUsageModel
-    Kicker.RecentUsageModel {
-        id: recentUsageModel
-        favoritesModel: kickoff.rootModel.favoritesModel
-    }
-
-    readonly property alias frequentUsageModel: frequentUsageModel
-    Kicker.RecentUsageModel {
-        id: frequentUsageModel
-        favoritesModel: kickoff.rootModel.favoritesModel
-        ordering: 1 // Popular / Frequently Used
-    }
     //END
 
     //BEGIN UI elements
@@ -165,7 +145,7 @@ PlasmoidItem {
     // True when central pane (and header) LayoutMirroring diverges from global
     // LayoutMirroring, in order to achieve the desired sidebar position
     // References to items according to their focus chain order
-    readonly property Item firstHeaderItem: header ? header.avatar : null
+    readonly property Item firstHeaderItem: searchField
     readonly property Item lastHeaderItem: header ? header.pinButton : null
     readonly property Item firstCentralPane: contentArea
     readonly property Item lastCentralPane: contentArea

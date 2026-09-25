@@ -34,28 +34,13 @@ Item {
         font: Kirigami.Theme.defaultFont
     }
 
-    readonly property real gridCellSize: gridDelegate.implicitHeight
+    // Approximate grid cell size based on standard Kickoff grid delegates
+    // (large icon + 2 lines of text + padding)
+    readonly property real gridCellSize: Kirigami.Units.iconSizes.large + (fontMetrics.height * 2) + (Kirigami.Units.largeSpacing * 2)
     readonly property real compactListDelegateHeight: compactListDelegate.implicitHeight
     //END
 
     //BEGIN Private
-    KickoffGridDelegate {
-        id: gridDelegate
-        kickoffItem: null
-        visible: false
-        enabled: false
-        model: null
-        index: -1
-        text: "asdf"
-        url: ""
-        decoration: "start-here-kde"
-        description: "asdf"
-        PC3.ToolTip.text: ""
-        width: implicitHeight
-        action: null
-        indicator: null
-        isMultilineText: false
-    }
     KickoffListDelegate {
         id: compactListDelegate
         kickoffItem: null

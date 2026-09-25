@@ -27,159 +27,79 @@ BasePage {
 
     }
 
-    property real flashFavorite: 0
 
-    // Flash favorites when adding one.
-    SequentialAnimation {
-        id: flashFavoriteAnimation
-        loops: 2
-        alwaysRunToEnd: true
-
-        NumberAnimation {
-            target: root
-            property: "flashFavorite"
-            from: 0
-            to: 1
-            duration: Kirigami.Units.veryLongDuration
-            easing.type: Easing.OutCubic
-        }
-        NumberAnimation {
-            target: root
-            property: "flashFavorite"
-            to: 0
-            duration: Kirigami.Units.veryLongDuration
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    Connections {
-        target: root.kickoffItem.rootModel.favoritesModel
-        function onFavoriteAdded() : void {
-            flashFavoriteAnimation.restart();
-        }
-    }
-
-
-
-
-    contentAreaComponent: VerticalStackView {
-        id: stackView
-
-        popEnter: Transition {
-            NumberAnimation {
-                property: "x"
-                from: 0.5 * root.width
-                to: 0
-                duration: Kirigami.Units.longDuration
-                easing.type: Easing.OutCubic
-            }
-            NumberAnimation {
-                property: "opacity"
-                from: 0.0
-                to: 1.0
-                duration: Kirigami.Units.longDuration
-                easing.type: Easing.OutCubic
-            }
-        }
-
-        pushEnter: Transition {
-            NumberAnimation {
-                property: "x"
-                from: 0.5 * -root.width
-                to: 0
-                duration: Kirigami.Units.longDuration
-                easing.type: Easing.OutCubic
-            }
-            NumberAnimation {
-                property: "opacity"
-                from: 0.0
-                to: 1.0
-                duration: Kirigami.Units.longDuration
-                easing.type: Easing.OutCubic
-            }
-        }
-
+    contentAreaComponent: KickoffListView {
+        id: applicationsListView
+        kickoffItem: root.kickoffItem
+        objectName: "applicationsListView"
+        mainContentView: true
 
         property int appsModelRow: 1
         readonly property Kicker.AppsModel appsModel: root.kickoffItem.rootModel.modelForRow(appsModelRow)
         Connections {
             target: root.kickoffItem.rootModel
-            function onRefreshed() { // recalculate appsModel binding on rootModel refresh;
-                stackView.appsModelRowChanged() // modelForRow does not create dependency
+            function onRefreshed() {
+                applicationsListView.appsModelRowChanged()
             }
         }
+
+        model: applicationsListView.appsModel
+        section.property: model && model.description === "KICKER_ALL_MODEL" ? "group" : "_unset"
+        section.criteria: ViewSection.FirstCharacter
         focus: true
-        initialItem: applicationsListViewComponent
 
-        Component {
-            id: applicationsListViewComponent
+        view.header: Component {
+            Column {
+                width: applicationsListView.view.availableWidth
+                visible: applicationsListView.appsModelRow === 1 && favoritesRepeater.count > 0
+                height: visible ? implicitHeight : 0
+                onHeightChanged: applicationsListView.view.contentY = applicationsListView.view.originY
 
-            KickoffListView {
-                id: applicationsListView
-                kickoffItem: root.kickoffItem
-                objectName: "applicationsListView"
-                mainContentView: true
-                model: stackView.appsModel
-                // we want to semantically switch between group and "", disabling grouping, workaround for QTBUG-121797
-                section.property: model && model.description === "KICKER_ALL_MODEL" ? "group" : "_unset"
-                section.criteria: ViewSection.FirstCharacter
+                PlasmaExtras.ListSectionHeader {
+                    width: parent.width
+                    text: i18n("Favorites") // qmllint disable unqualified
+                }
 
-                view.header: Component {
-                    Column {
+                ListView {
+                    id: favoritesRepeater
+                    width: parent.width
+                    height: contentHeight
+                    interactive: false
+                    model: sortedFavoritesModel
+                    delegate: KickoffListDelegate {
+                        kickoffItem: root.kickoffItem
+                        id: favDelegate
 
-                                width: applicationsListView.view.availableWidth // qmllint disable missing-property
+                        width: applicationsListView.view.availableWidth
 
-                        visible: stackView.appsModelRow === 1 && favoritesRepeater.count > 0
-                        height: visible ? implicitHeight : 0
-                        onHeightChanged: applicationsListView.view.contentY = applicationsListView.view.originY
 
-                        PlasmaExtras.ListSectionHeader {
-                            width: parent.width
-                            text: i18n("Favorites") // qmllint disable unqualified
+                        mouseArea.onEntered: {
+                            applicationsListView.view.currentIndex = -1
                         }
 
-                        ListView {
-                            id: favoritesRepeater
-                            width: parent.width
-                            height: contentHeight
-                            interactive: false
-                            model: sortedFavoritesModel
-                            delegate: KickoffListDelegate {
-                                kickoffItem: root.kickoffItem
-                                id: favDelegate
-
-                                width: applicationsListView.view.availableWidth // qmllint disable missing-property
-
-
-                                mouseArea.onEntered: {
-                                    applicationsListView.view.currentIndex = -1
-                                }
-
-                                action: T.Action {
-                                    onTriggered: {
-                                        if (root.kickoffItem.rootModel.favoritesModel.trigger) {
-                                            sortedFavoritesModel.trigger(favDelegate.index)
-                                            if (root.kickoffItem.hideOnWindowDeactivate) {
-                                                root.kickoffItem.closeMenu();
-                                            }
-                                        }
+                        action: T.Action {
+                            onTriggered: {
+                                if (root.kickoffItem.rootModel.favoritesModel.trigger) {
+                                    sortedFavoritesModel.trigger(favDelegate.index)
+                                    if (root.kickoffItem.hideOnWindowDeactivate) {
+                                        root.kickoffItem.closeMenu();
                                     }
-                                }
-
-                                background: PlasmaExtras.Highlight {
-                                    anchors.fill: parent
-                                    hovered: favDelegate.mouseArea.containsMouse
-                                    active: favDelegate.mouseArea.containsMouse
-                                    pressed: favDelegate.down
                                 }
                             }
                         }
 
-                        PlasmaExtras.ListSectionHeader {
-                            width: parent.width
-                            text: i18n("All Applications") // qmllint disable unqualified
+                        background: PlasmaExtras.Highlight {
+                            anchors.fill: parent
+                            hovered: favDelegate.mouseArea.containsMouse
+                            active: favDelegate.mouseArea.containsMouse
+                            pressed: favDelegate.down
                         }
                     }
+                }
+
+                PlasmaExtras.ListSectionHeader {
+                    width: parent.width
+                    text: i18n("All Applications") // qmllint disable unqualified
                 }
             }
         }
@@ -187,23 +107,20 @@ BasePage {
         Connections {
             target: root.kickoffItem
             function onIsMenuOpenChanged() {
-
-                if (!root.kickoffItem.isMenuOpen && root.kickoffItem.contentArea && root.kickoffItem.contentArea.currentItem) { // qmllint disable missing-property
-                    root.kickoffItem.contentArea.currentItem.forceActiveFocus()
-
+                if (!root.kickoffItem.isMenuOpen && root.kickoffItem.contentArea) {
+                    root.kickoffItem.contentArea.forceActiveFocus()
                 }
             }
         }
     }
+
     // NormalPage doesn't get destroyed when deactivated, so the binding uses
     // StackView.status and visible. This way the bindings are reset when
     // NormalPage is Activated again.
-        Binding {
+    Binding {
         target: root.kickoffItem
         property: "contentArea"
-
-        value: root.contentAreaItem ? root.contentAreaItem.currentItem : null // qmllint disable missing-property
-
+        value: root.contentAreaItem
         when: root.T.StackView.status === T.StackView.Active && root.visible
         restoreMode: Binding.RestoreBinding
     }

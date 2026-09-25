@@ -28,8 +28,8 @@ KCM.SimpleKCM {
 
     property string cfg_menuLabel: menuLabel.text
     property string cfg_icon: Plasmoid.configuration.icon
-    property bool cfg_pin: false
-    property bool cfg_pinDefault: false
+
+
     property alias cfg_appNameFormat: appNameFormat.currentIndex
     property var cfg_systemFavorites: String(Plasmoid.configuration.systemFavorites)
     property int cfg_primaryActions: Plasmoid.configuration.primaryActions

@@ -36,7 +36,6 @@ EmptyPage {
     property alias movedWithKeyboard: listViewItem.movedWithKeyboard
 
     property bool mainContentView: false
-    property bool hasSectionView: false
 
     /**
      * Request showing the section view
@@ -162,11 +161,6 @@ EmptyPage {
 
                 height: KickoffSingleton.compactListDelegateHeight
                 text: section.length === 1 ? section.toUpperCase() : section
-
-                HoverHandler {
-                    enabled: root.hasSectionView
-                    cursorShape: enabled ? Qt.PointingHandCursor : undefined
-                }
             }
         }
 

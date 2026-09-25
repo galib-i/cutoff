@@ -81,28 +81,14 @@ DropArea {
     }
 
     Shortcut {
-        enabled: (root.targetView instanceof GridView && root.targetView.currentIndex >= root.targetView.columns)
-              || (root.targetView instanceof ListView && root.targetView.currentIndex > 0)
+        enabled: root.targetView instanceof ListView && root.targetView.currentIndex > 0
         sequence: "Ctrl+Shift+Up"
-        onActivated: root.moveRow(root.targetView.currentIndex - (root.targetView instanceof GridView ? root.targetView.columns : 1))
-    }
-
-    Shortcut {
-        enabled: (root.targetView instanceof GridView && root.targetView.currentIndex < root.targetView.count - root.targetView.columns)
-              || (root.targetView instanceof ListView && root.targetView.currentIndex + 1 < root.targetView.count)
-        sequence: "Ctrl+Shift+Down"
-        onActivated: root.moveRow(root.targetView.currentIndex + (root.targetView instanceof GridView ? root.targetView.columns : 1))
-    }
-
-    Shortcut {
-        enabled: root.targetView instanceof GridView && root.targetView.currentIndex % root.targetView.columns > 0
-        sequence: "Ctrl+Shift+Left"
         onActivated: root.moveRow(root.targetView.currentIndex - 1)
     }
 
     Shortcut {
-        enabled: root.targetView instanceof GridView && root.targetView.currentIndex % root.targetView.columns !== root.targetView.columns - 1
-        sequence: "Ctrl+Shift+Right"
+        enabled: root.targetView instanceof ListView && root.targetView.currentIndex + 1 < root.targetView.count
+        sequence: "Ctrl+Shift+Down"
         onActivated: root.moveRow(root.targetView.currentIndex + 1)
     }
 

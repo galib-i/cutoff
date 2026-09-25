@@ -32,7 +32,7 @@ FocusScope {
             root.kickoffItem.footer.nextItemInFocusChain().forceActiveFocus(Qt.TabFocusReason)
         }
         Keys.onBacktabPressed: event => {
-            root.kickoffItem.header.avatar.forceActiveFocus(Qt.BacktabFocusReason)
+            root.kickoffItem.searchField.forceActiveFocus(Qt.BacktabFocusReason)
         }
         Keys.onUpPressed: event => {
             root.kickoffItem.searchField.forceActiveFocus(Qt.BacktabFocusReason);

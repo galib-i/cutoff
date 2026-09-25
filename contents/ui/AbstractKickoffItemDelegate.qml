@@ -43,7 +43,7 @@ T.ItemDelegate {
     required property string description
     required property bool isMultilineText
 
-    function getView() { return ListView.view ?? GridView.view; }
+    function getView() { return ListView.view; }
     readonly property var view: getView()
     property bool removalPlaceholderActive: false
     readonly property bool hasActionList: model && (model.favoriteId !== null || ("hasActionList" in model && model.hasActionList === true))
@@ -261,9 +261,6 @@ T.ItemDelegate {
     PC3.ToolTip.text: {
         if (root.labelTruncated) {
             return model?.display ?? ""
-        } else if (root.descriptionTruncated || (!root.descriptionVisible && (root.isSearchResult
-                                                                              || Plasmoid.configuration.appNameFormat > 1))) {
-            return description
         }
         return ""
     }
@@ -271,7 +268,7 @@ T.ItemDelegate {
     PC3.ToolTip.delay: Kirigami.Units.toolTipDelay
 
     background: Loader {
-        active: (root.GridView?.isCurrentItem || root.ListView?.isCurrentItem) ?? false
+        active: root.ListView?.isCurrentItem ?? false
         sourceComponent: PlasmaExtras.Highlight {
             anchors.fill: parent
             z: (root.Drag.active ?? false) ? 3 : 0

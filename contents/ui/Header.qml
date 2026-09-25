@@ -24,7 +24,7 @@ PlasmaExtras.PlasmoidHeading {
     property alias searchText: searchField.text
     property Item configureButton: configureButton
     property Item pinButton: pinButton
-    property Item avatar: searchField
+
 
     contentHeight: layoutContainer.height
         + root.kickoffItem.backgroundMetrics.topPadding
@@ -32,9 +32,8 @@ PlasmaExtras.PlasmoidHeading {
 
     spacing: root.kickoffItem.backgroundMetrics.spacing
 
-    function tabSetFocus(event, invertedTarget, normalTarget) {
+    function tabSetFocus(event, normalTarget) {
         // Set input focus depending on whether layout order matches focus chain order
-        // normalTarget is optional
         const reason = event.key == Qt.Key_Tab ? Qt.TabFocusReason : Qt.BacktabFocusReason
         if (normalTarget !== undefined) {
             normalTarget.forceActiveFocus(reason)
@@ -168,10 +167,10 @@ PlasmaExtras.PlasmoidHeading {
                         restoreMode: Binding.RestoreNone
                     }
                     Keys.onTabPressed: event => {
-                        root.tabSetFocus(event, nextItemInFocusChain(false), root.kickoffItem.firstCentralPane || nextItemInFocusChain());
+                        root.tabSetFocus(event, root.kickoffItem.firstCentralPane || nextItemInFocusChain());
                     }
                     Keys.onBacktabPressed: event => {
-                        root.tabSetFocus(event, nextItemInFocusChain(false), nextItemInFocusChain(false));
+                        root.tabSetFocus(event, nextItemInFocusChain(false));
                     }
                     Keys.onLeftPressed: event => {
                         nextItemInFocusChain(false).forceActiveFocus(Application.layoutDirection == Qt.RightToLeft ? Qt.TabFocusReason : Qt.BacktabFocusReason)
