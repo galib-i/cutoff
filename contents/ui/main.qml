@@ -26,6 +26,12 @@ import "code/tools.js" as Tools
 
 PlasmoidItem {
     id: kickoff
+    onExpandedChanged: {
+        if (Plasmoid.configuration.centerOnScreen && expanded) {
+            centerDialog.visible = !centerDialog.visible
+            Qt.callLater(function() { kickoff.expanded = false })
+        }
+    }
     Connections {
         target: Plasmoid.configuration
         function onCenterOnScreenChanged() {

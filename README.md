@@ -2,8 +2,7 @@
 
 KDE Plasma's Application Launcher, but just the list.
 <p align="center">
-  <img width="49%" alt="Standard Cutoff" src="https://github.com/user-attachments/assets/7c328455-5241-4258-a8e7-f709fdd8c8ca" />
-  <img width="49%" alt="Pop-up Cutoff" src="https://github.com/user-attachments/assets/a4f6376f-d5da-4f42-af03-2f28b31f4248" />
+  <img width="500" alt="Pop-up Cutoff" src="https://github.com/user-attachments/assets/7c328455-5241-4258-a8e7-f709fdd8c8ca" />
 </p>
 
 > [!NOTE]
@@ -16,7 +15,7 @@ KDE Plasma's Application Launcher, but just the list.
 
 ## Get Started
 
-Download the latest `.plasmoid` from [Releases](https://github.com/galib-i/cutoff/releases/latest) and install it [manually](https://userbase.kde.org/Plasma/Installing_Plasmoids#:~:text=panel%20as%20usual.-,Installing%20from%20local%20file,-Select%20Add%20Widgets) or with `kpackagetool6`:
+Download the latest `.plasmoid` from [Releases](https://github.com/galib-i/cutoff/releases/latest) and install it [manually](https://userbase.kde.org/Plasma/Installing_Plasmoids#:~:text=panel%20as%20usual.-,Installing%20from%20local%20file,-Select%20Add%20Widgets), or with `kpackagetool6`:
 
 ```
 kpackagetool6 -t Plasma/Applet -i com.github.galib.cutoff.plasmoid
@@ -55,4 +54,4 @@ Right-click the widget and choose _Configure Cutoff…_:
 
 ##
 
-_Licensed under the [GPLv2 or later](LICENSE), inheriting from the original source code._
+_Licensed under the [GPLv2 or later license](LICENSE), inheriting from the original source code._
