@@ -145,7 +145,7 @@ T.ItemDelegate {
                 return;
             }
             root.view.currentIndex = root.index
-            // if successfully triggered, close popup
+            // if successfully triggered, close pop-up
 
 
             if (root.view.model.trigger && root.view.model.trigger(root.index, "", null)) {
@@ -213,7 +213,7 @@ T.ItemDelegate {
             && !root.viewMovedWithWheel
             // Fix VerticalStackView animation causing view currentIndex
             // to change while delegates are moving under the mouse cursor
-            && root.kickoffItem.realFullRep && !root.kickoffItem.realFullRep.contentItem.busy && !root.kickoffItem.realFullRep.blockingHoverFocus
+            && root.kickoffItem.realFullRep && root.kickoffItem.realFullRep.contentItem && !root.kickoffItem.realFullRep.contentItem.busy && !root.kickoffItem.realFullRep.blockingHoverFocus
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onEntered: {

@@ -48,12 +48,14 @@ KCM.SimpleKCM {
     property int cfg_popupWidthDefault
     property int cfg_popupHeightDefault
     property bool cfg_showConfigureButtonDefault
+    property bool cfg_pinDefault
     property bool cfg_highlightNewlyInstalledAppsDefault
     property string cfg_iconDefault
     property string cfg_menuLabelDefault
     property int cfg_primaryActionsDefault
     property bool cfg_showActionButtonCaptionsDefault
     property var cfg_systemFavoritesDefault
+    property bool cfg_pin
 
     Kirigami.FormLayout {
         QQC2.Button {
@@ -201,7 +203,7 @@ KCM.SimpleKCM {
         }
 
         RowLayout {
-            Kirigami.FormData.label: i18nc("@label:spinbox", "Popup Width:") // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Width:") // qmllint disable unqualified
             QQC2.SpinBox {
                 id: popupWidthSpinBox
                 enabled: centerOnScreenCheckbox.checked
@@ -216,7 +218,7 @@ KCM.SimpleKCM {
         }
 
         RowLayout {
-            Kirigami.FormData.label: i18nc("@label:spinbox", "Popup Height:") // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Height:") // qmllint disable unqualified
             QQC2.SpinBox {
                 id: popupHeightSpinBox
                 enabled: centerOnScreenCheckbox.checked

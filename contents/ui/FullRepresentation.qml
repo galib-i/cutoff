@@ -76,11 +76,13 @@ EmptyPage {
     header: Header {
         id: header
         kickoffItem: root.kickoffItem
+        fullRepresentationRoot: root
         Binding {
             target: root.kickoffItem
             property: "header"
             value: header
             restoreMode: Binding.RestoreBinding
+            when: root.kickoffItem.realFullRep === root
         }
     }
 

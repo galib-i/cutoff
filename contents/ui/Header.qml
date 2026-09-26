@@ -21,6 +21,10 @@ PlasmaExtras.PlasmoidHeading {
 
     required property var kickoffItem
 
+    // The FullRepresentation instance that is currently kickoffItem.realFullRep for kickoffItem.searchField / kickoffItem.header.
+    required property Item fullRepresentationRoot
+    readonly property bool isActiveRepresentation: root.kickoffItem.realFullRep === root.fullRepresentationRoot
+
     property alias searchText: searchField.text
     property Item configureButton: configureButton
     property Item pinButton: pinButton
@@ -77,12 +81,22 @@ PlasmaExtras.PlasmoidHeading {
                     Layout.leftMargin: root.kickoffItem.backgroundMetrics.leftPadding
                     focus: true
 
+                    Keys.onEscapePressed: event => {
+                        if (searchField.text.length > 0) {
+                            searchField.clear()
+                        } else {
+                            root.kickoffItem.closeMenu()
+                        }
+                        event.accepted = true
+                    }
+
                     Binding {
                         target: root.kickoffItem
                         property: "searchField"
                         value: searchField
-                        // there's only one header ever, so don't waste resources
-                        restoreMode: Binding.RestoreNone
+                        restoreMode: Binding.RestoreBinding
+                        // Only the active view's Header controls kickoffItem.searchField.
+                        when: root.isActiveRepresentation
                     }
                     Connections {
                         target: root.kickoffItem
@@ -163,8 +177,9 @@ PlasmaExtras.PlasmoidHeading {
                         target: root.kickoffItem
                         property: "hideOnWindowDeactivate"
                         value: !pinButton.checked
-                        // there should be no other bindings, so don't waste resources
-                        restoreMode: Binding.RestoreNone
+                        restoreMode: Binding.RestoreBinding
+                        // Only the active view's pin button should control this.
+                        when: root.isActiveRepresentation
                     }
                     Keys.onTabPressed: event => {
                         root.tabSetFocus(event, root.kickoffItem.firstCentralPane || nextItemInFocusChain());
