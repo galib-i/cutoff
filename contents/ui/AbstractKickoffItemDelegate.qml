@@ -205,13 +205,13 @@ T.ItemDelegate {
         // Only for ListView since extending margins for GridView is hard
         anchors.leftMargin: root.view instanceof ListView ? -root.view.leftMargin : anchors.margins
         anchors.rightMargin: root.view instanceof ListView ? -root.view.rightMargin : anchors.margins
-        hoverEnabled: root.view
+        hoverEnabled: !!(root.view
             // When the movedWithWheel condition is broken, this ensures that
             // onEntered is called again without moving the mouse.
             && !root.viewMovedWithWheel
             // Fix VerticalStackView animation causing view currentIndex
             // to change while delegates are moving under the mouse cursor
-            && root.kickoffItem.realFullRep && root.kickoffItem.realFullRep.contentItem && !root.kickoffItem.realFullRep.contentItem.busy && !root.kickoffItem.realFullRep.blockingHoverFocus
+            && root.kickoffItem.realFullRep && root.kickoffItem.realFullRep.contentItem && !root.kickoffItem.realFullRep.contentItem.busy && !root.kickoffItem.realFullRep.blockingHoverFocus)
         acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onEntered: {
