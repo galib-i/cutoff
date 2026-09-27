@@ -123,7 +123,7 @@ AbstractKickoffItemDelegate {
 
                 type: Kirigami.Badge.Type.Positive
 
-                Accessible.description: i18n("Newly-installed application") // qmllint disable unqualified
+                Accessible.description: i18n("Newly-installed application")
             }
         }
     }

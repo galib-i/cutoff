@@ -74,7 +74,6 @@ T.ItemDelegate {
         if (!hasActionList) { return; }
 
         let actions = Array.from(model.actionList);
-        // qmllint disable unqualified
         const favoriteActions = Tools.createFavoriteActions(
             i18n, //i18n() function callback
             root.kickoffItem.rootModel.favoritesModel,
@@ -100,7 +99,7 @@ T.ItemDelegate {
         }
 
         if (actions && actions.length > 0) {
-            ActionMenu.plasmoid = kickoff;
+            ActionMenu.plasmoid = root.kickoffItem;
             ActionMenu.menu.visualParent = root;
             ActionMenu.actionList = actions;
             if (x !== undefined && y !== undefined) {

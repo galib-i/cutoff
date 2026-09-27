@@ -26,7 +26,7 @@ import "code/tools.js" as Tools
 
 PlasmoidItem {
     id: kickoff
-    onExpandedChanged: {
+    onExpandedChanged: expanded => {
         if (Plasmoid.configuration.centerOnScreen && expanded) {
             centerDialog.visible = !centerDialog.visible
             Qt.callLater(function() { kickoff.expanded = false })
@@ -189,7 +189,7 @@ PlasmoidItem {
         id: centerDialog
         location: PlasmaCore.Types.Floating
         visible: false
-        onVisibleChanged: {
+        onVisibleChanged: visible => {
             if (visible) {
                 x = Math.round((Screen.width - floatingFullRep.width) / 2)
                 y = Math.round((Screen.height - floatingFullRep.height) / 2)
@@ -385,7 +385,7 @@ PlasmoidItem {
 
     Plasmoid.contextualActions: [
         PlasmaCore.Action {
-            text: i18nc("@action:inmenu launches kmenuedit", "Edit Applications…") // qmllint disable unqualified
+            text: i18nc("@action:inmenu launches kmenuedit", "Edit Applications…")
             icon.name: "kmenuedit"
             visible: Plasmoid.immutability !== PlasmaCore.Types.SystemImmutable
             onTriggered: processRunner.runMenuEditor()

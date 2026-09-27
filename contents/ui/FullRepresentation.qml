@@ -148,7 +148,7 @@ EmptyPage {
 
                         iconName: "edit-none"
                         opacity: 0
-                        text: i18nc("@info:status", "No matches") // qmllint disable unqualified
+                        text: i18nc("@info:status", "No matches")
 
                         Connections {
                             target: root.kickoffItem.runnerModel

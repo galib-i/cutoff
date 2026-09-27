@@ -57,7 +57,7 @@ BasePage {
 
                 PlasmaExtras.ListSectionHeader {
                     width: parent.width
-                    text: i18n("Favorites") // qmllint disable unqualified
+                    text: i18n("Favorites")
                 }
 
                 ListView {
@@ -99,7 +99,7 @@ BasePage {
 
                 PlasmaExtras.ListSectionHeader {
                     width: parent.width
-                    text: i18n("All Applications") // qmllint disable unqualified
+                    text: i18n("All Applications")
                 }
             }
         }

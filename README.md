@@ -1,4 +1,3 @@
-
 # Cutoff
 
 KDE Plasma's Application Launcher, but just the list.

@@ -61,18 +61,18 @@ KCM.SimpleKCM {
         QQC2.Button {
             id: iconButton
 
-            Kirigami.FormData.label: i18nc("@label prefix for icon-only button", "Icon:") // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("@label prefix for icon-only button", "Icon:")
 
             implicitWidth: previewFrame.width + Kirigami.Units.smallSpacing * 2
             implicitHeight: previewFrame.height + Kirigami.Units.smallSpacing * 2
             hoverEnabled: true
 
-            Accessible.name: i18nc("@action:button", "Change Application Launcher's icon") // qmllint disable unqualified
-            Accessible.description: i18nc("@info:whatsthis", "Current icon is %1. Click to open menu to change the current icon or reset to the default icon.", root.cfg_icon) // qmllint disable unqualified
+            Accessible.name: i18nc("@action:button", "Change Application Launcher's icon")
+            Accessible.description: i18nc("@info:whatsthis", "Current icon is %1. Click to open menu to change the current icon or reset to the default icon.", root.cfg_icon)
             Accessible.role: Accessible.ButtonMenu
 
             QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
-            QQC2.ToolTip.text: i18nc("@info:tooltip", "Icon name is \"%1\"", root.cfg_icon) // qmllint disable unqualified
+            QQC2.ToolTip.text: i18nc("@info:tooltip", "Icon name is \"%1\"", root.cfg_icon)
             QQC2.ToolTip.visible: iconButton.hovered && root.cfg_icon.length > 0
 
             KIconThemes.IconDialog {
@@ -107,19 +107,19 @@ KCM.SimpleKCM {
                 y: parent.height
 
                 QQC2.MenuItem {
-                    text: i18nc("@item:inmenu Open icon chooser dialog", "Choose…") // qmllint disable unqualified
+                    text: i18nc("@item:inmenu Open icon chooser dialog", "Choose…")
                     icon.name: "document-open-folder"
-                    Accessible.description: i18nc("@info:whatsthis", "Choose an icon for Application Launcher") // qmllint disable unqualified
+                    Accessible.description: i18nc("@info:whatsthis", "Choose an icon for Application Launcher")
                     onClicked: iconDialog.open()
                 }
                 QQC2.MenuItem {
-                    text: i18nc("@item:inmenu Reset icon to default", "Reset to default icon") // qmllint disable unqualified
+                    text: i18nc("@item:inmenu Reset icon to default", "Reset to default icon")
                     icon.name: "edit-clear"
                     enabled: root.cfg_icon !== Tools.defaultIconName
                     onClicked: root.cfg_icon = Tools.defaultIconName
                 }
                 QQC2.MenuItem {
-                    text: i18nc("@action:inmenu", "Remove icon") // qmllint disable unqualified
+                    text: i18nc("@action:inmenu", "Remove icon")
                     icon.name: "delete"
                     enabled: root.cfg_icon !== "" && menuLabel.text && Plasmoid.formFactor !== PlasmaCore.Types.Vertical
                     onClicked: root.cfg_icon = ""
@@ -130,9 +130,9 @@ KCM.SimpleKCM {
         Kirigami.ActionTextField {
             id: menuLabel
             enabled: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
-            Kirigami.FormData.label: i18nc("@label:textbox", "Text label:") // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("@label:textbox", "Text label:")
             text: Plasmoid.configuration.menuLabel
-            placeholderText: i18nc("@info:placeholder", "Type here to add a text label") // qmllint disable unqualified
+            placeholderText: i18nc("@info:placeholder", "Type here to add a text label")
             onTextEdited: {
                 root.cfg_menuLabel = menuLabel.text
 
@@ -146,7 +146,7 @@ KCM.SimpleKCM {
             rightActions: QQC2.Action {
                 icon.name: "edit-clear"
                 enabled: menuLabel.text !== ""
-                text: i18nc("@action:button", "Reset menu label") // qmllint disable unqualified
+                text: i18nc("@action:button", "Reset menu label")
                 onTriggered: {
                     menuLabel.clear()
                     root.cfg_menuLabel = ""
@@ -159,7 +159,7 @@ KCM.SimpleKCM {
             Layout.fillWidth: true
             Layout.maximumWidth: Kirigami.Units.gridUnit * 25
             visible: Plasmoid.formFactor === PlasmaCore.Types.Vertical
-            text: i18nc("@info", "A text label cannot be set when the Panel is vertical.") // qmllint disable unqualified
+            text: i18nc("@info", "A text label cannot be set when the Panel is vertical.")
             wrapMode: Text.Wrap
             font: Kirigami.Theme.smallFont
         }
@@ -170,25 +170,25 @@ KCM.SimpleKCM {
 
         QQC2.ComboBox {
             id: appNameFormat
-            Kirigami.FormData.label: i18nc("Appearance options", "Appearance:") // qmllint disable unqualified
-            model: [i18nc("@item:inlistbox", "Name only"), i18nc("@item:inlistbox", "Description only"), i18nc("@item:inlistbox", "Name (Description)"), i18nc("@item:inlistbox", "Description (Name)")] // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("Appearance options", "Appearance:")
+            model: [i18nc("@item:inlistbox", "Name only"), i18nc("@item:inlistbox", "Description only"), i18nc("@item:inlistbox", "Name (Description)"), i18nc("@item:inlistbox", "Description (Name)")]
         }
 
         QQC2.CheckBox {
             id: compactModeCheckbox
-            text: i18nc("@option:check", "Use compact list item style") // qmllint disable unqualified
+            text: i18nc("@option:check", "Use compact list item style")
             checked: Plasmoid.configuration.compactMode
         }
 
         QQC2.CheckBox {
             id: showConfigureButtonCheckbox
-            text: i18n("Show settings icon in menu") // qmllint disable unqualified
+            text: i18n("Show settings icon in menu")
             checked: Plasmoid.configuration.showConfigureButton
         }
 
         QQC2.CheckBox {
             id: highlightNewlyInstalledAppsCheckbox
-            text: i18nc("@option:check", "Highlight newly-installed applications") // qmllint disable unqualified
+            text: i18nc("@option:check", "Highlight newly-installed applications")
         }
 
         Item {
@@ -197,13 +197,13 @@ KCM.SimpleKCM {
 
         QQC2.CheckBox {
             id: centerOnScreenCheckbox
-            Kirigami.FormData.label: i18n("Menu:") // qmllint disable unqualified
-            text: i18nc("@option:check", "Center on screen") // qmllint disable unqualified
+            Kirigami.FormData.label: i18n("Menu:")
+            text: i18nc("@option:check", "Center on screen")
             checked: Plasmoid.configuration.centerOnScreen
         }
 
         RowLayout {
-            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Width:") // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Width:")
             QQC2.SpinBox {
                 id: popupWidthSpinBox
                 enabled: centerOnScreenCheckbox.checked
@@ -218,7 +218,7 @@ KCM.SimpleKCM {
         }
 
         RowLayout {
-            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Height:") // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Height:")
             QQC2.SpinBox {
                 id: popupHeightSpinBox
                 enabled: centerOnScreenCheckbox.checked
@@ -238,8 +238,8 @@ KCM.SimpleKCM {
 
         QQC2.RadioButton {
             id: powerActionsButton
-            Kirigami.FormData.label: i18nc("@title:group prefix for radio button group", "Footer Buttons:") // qmllint disable unqualified
-            text: i18nc("@option:radio Show buttons for", "Power") // qmllint disable unqualified
+            Kirigami.FormData.label: i18nc("@title:group prefix for radio button group", "Footer Buttons:")
+            text: i18nc("@option:radio Show buttons for", "Power")
             QQC2.ButtonGroup.group: radioGroup
             property string actions: "suspend,hibernate,reboot,shutdown"
             property int index: 0
@@ -248,7 +248,7 @@ KCM.SimpleKCM {
 
         QQC2.RadioButton {
             id: sessionActionsButton
-            text: i18nc("@option:radio Show buttons for", "Session") // qmllint disable unqualified
+            text: i18nc("@option:radio Show buttons for", "Session")
             QQC2.ButtonGroup.group: radioGroup
             property string actions: "lock-screen,logout,save-session,switch-user"
             property int index: 1
@@ -257,7 +257,7 @@ KCM.SimpleKCM {
 
         QQC2.RadioButton {
             id: allActionsButton
-            text: i18nc("@option:radio Show buttons for", "Power and session") // qmllint disable unqualified
+            text: i18nc("@option:radio Show buttons for", "Power and session")
             QQC2.ButtonGroup.group: radioGroup
             property string actions: "lock-screen,logout,save-session,switch-user,suspend,hibernate,reboot,shutdown"
             property int index: 3
@@ -266,7 +266,7 @@ KCM.SimpleKCM {
 
         QQC2.CheckBox {
             id: showActionButtonCaptions
-            text: i18nc("@option:check", "Show action button captions") // qmllint disable unqualified
+            text: i18nc("@option:check", "Show action button captions")
         }
 
         Item {
@@ -274,10 +274,10 @@ KCM.SimpleKCM {
         }
 
         QQC2.Button {
-            Kirigami.FormData.label: i18n("Search:") // qmllint disable unqualified
+            Kirigami.FormData.label: i18n("Search:")
             enabled: KConfig.KAuthorized.authorizeControlModule("kcm_plasmasearch")
             icon.name: "settings-configure"
-            text: i18nc("@action:button opens plasmasearch kcm", "Configure Search Plugins…") // qmllint disable unqualified
+            text: i18nc("@action:button opens plasmasearch kcm", "Configure Search Plugins…")
             onClicked: KCM.KCMLauncher.openSystemSettings("kcm_plasmasearch")
         }
     }

@@ -168,7 +168,7 @@ PlasmaExtras.PlasmoidHeading {
                     checkable: true
                     checked: Plasmoid.configuration.pin
                     icon.name: "window-pin"
-                    text: i18nc("@action:button Pin widget open if it loses focus, icon-only button, for tooltip/Accessible", "Keep Open") // qmllint disable unqualified
+                    text: i18nc("@action:button Pin widget open if it loses focus, icon-only button, for tooltip/Accessible", "Keep Open")
                     display: PC3.ToolButton.IconOnly
                     PC3.ToolTip.text: text
                     PC3.ToolTip.delay: Kirigami.Units.toolTipDelay
