@@ -131,7 +131,7 @@ EmptyPage {
         }
 
         onCountChanged: {
-            if (!activeFocus) {
+            if (!activeFocus && root.kickoffItem.runnerModel.query.length === 0) {
                 currentIndex = -1
             } else if (count > 0 && currentIndex !== -1) {
                 positionViewAtIndex(currentIndex, ListView.Contain)
