@@ -114,7 +114,7 @@ EmptyPage {
                     viewMovedWithKeyboard: searchView.movedWithKeyboard
                     kickoffItem: root.kickoffItem
 
-                    width: searchView.view.availableWidth // qmllint disable missing-property
+                    width: searchView.view.availableWidth
 
                     isSearchResult: true
                 }
@@ -236,12 +236,12 @@ EmptyPage {
         sourceComponent: DropArea {
             id: favoriteRemoveDropArea
 
-            // should be  "as AbstractKickoffItemDelegate", but the type system gets confused when changing view style at runtime
-            readonly property var draggedItem: root.kickoffItem.dragSource.sourceItem
+            readonly property AbstractKickoffItemDelegate draggedItem:
+                root.kickoffItem.dragSource.sourceItem as AbstractKickoffItemDelegate
 
             onEntered: event => {
 
-                if (draggedItem?.view.model instanceof Kicker.KAStatsFavoritesModel) { // qmllint disable missing-property
+                if (draggedItem?.view.model instanceof Kicker.KAStatsFavoritesModel) {
 
                     event.accept (Qt.MoveAction)
                     draggedItem.removalPlaceholderActive = true
@@ -252,7 +252,7 @@ EmptyPage {
 
             onDropped: event => {
 
-                if (draggedItem && root.kickoffItem.rootModel.favoritesModel.isFavorite(draggedItem.model.favoriteId) && draggedItem.view.model instanceof Kicker.KAStatsFavoritesModel) { // qmllint disable missing-property
+                if (draggedItem && root.kickoffItem.rootModel.favoritesModel.isFavorite(draggedItem.model.favoriteId) && draggedItem.view.model instanceof Kicker.KAStatsFavoritesModel) {
 
                     root.kickoffItem.rootModel.favoritesModel.removeFavorite(draggedItem.model.favoriteId);
                     event.accept(Qt.MoveAction)

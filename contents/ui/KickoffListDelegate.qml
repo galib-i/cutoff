@@ -141,8 +141,7 @@ AbstractKickoffItemDelegate {
         sourceComponent: KSvg.SvgItem {
             width: parent.width
 
-            height: KickoffSingleton.lineSvg?.horLineHeight ?? 0 // qmllint disable missing-property
-
+            height: KickoffSingleton.horLineHeight
 
             Binding on svg {
                 value: KickoffSingleton.lineSvg

@@ -171,7 +171,10 @@ PlasmoidItem {
     }
 
     // Used to show smaller Kickoff on small screens
-    readonly property int minimumGridRowCount: Math.min(Screen.desktopAvailableWidth, Screen.desktopAvailableHeight) * Screen.devicePixelRatio < KickoffSingleton.gridCellSize * 4 + (realFullRep ? realFullRep.normalPage.preferredSideBarWidth : KickoffSingleton.gridCellSize * 2) ? 2 : 4
+    readonly property int minimumGridRowCount:
+        Math.min(Screen.desktopAvailableWidth, Screen.desktopAvailableHeight) * Screen.devicePixelRatio
+            < KickoffSingleton.gridCellSize * 4 + KickoffSingleton.gridCellSize * 2
+        ? 2 : 4
     //END
 
     Plasmoid.icon: Plasmoid.configuration.icon

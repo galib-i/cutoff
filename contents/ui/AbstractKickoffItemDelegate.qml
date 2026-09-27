@@ -43,15 +43,14 @@ T.ItemDelegate {
     required property string description
     required property bool isMultilineText
 
-    function getView() { return ListView.view; }
-    readonly property var view: getView()
+    readonly property ListView view: ListView.view
     property bool removalPlaceholderActive: false
     readonly property bool hasActionList: model && (model.favoriteId !== null || ("hasActionList" in model && model.hasActionList === true))
     property bool isSearchResult: false
 
     readonly property bool isSeparator: model && (model.isSeparator === true)
 
-    property int separatorHeight: (KickoffSingleton.lineSvg?.horLineHeight ?? 0) + (2 * Kirigami.Units.smallSpacing) // qmllint disable missing-property
+    property int separatorHeight: KickoffSingleton.horLineHeight + (2 * Kirigami.Units.smallSpacing)
 
     property int itemHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
 

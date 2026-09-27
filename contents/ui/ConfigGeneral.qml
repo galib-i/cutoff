@@ -241,27 +241,33 @@ KCM.SimpleKCM {
             Kirigami.FormData.label: i18nc("@title:group prefix for radio button group", "Footer Buttons:")
             text: i18nc("@option:radio Show buttons for", "Power")
             QQC2.ButtonGroup.group: radioGroup
-            property string actions: "suspend,hibernate,reboot,shutdown"
-            property int index: 0
             checked: Plasmoid.configuration.primaryActions === 0
+            onToggled: if (checked) {
+                root.cfg_primaryActions = 0
+                root.cfg_systemFavorites = "suspend,hibernate,reboot,shutdown"
+            }
         }
 
         QQC2.RadioButton {
             id: sessionActionsButton
             text: i18nc("@option:radio Show buttons for", "Session")
             QQC2.ButtonGroup.group: radioGroup
-            property string actions: "lock-screen,logout,save-session,switch-user"
-            property int index: 1
             checked: Plasmoid.configuration.primaryActions === 1
+            onToggled: if (checked) {
+                root.cfg_primaryActions = 1
+                root.cfg_systemFavorites = "lock-screen,logout,save-session,switch-user"
+            }
         }
 
         QQC2.RadioButton {
             id: allActionsButton
             text: i18nc("@option:radio Show buttons for", "Power and session")
             QQC2.ButtonGroup.group: radioGroup
-            property string actions: "lock-screen,logout,save-session,switch-user,suspend,hibernate,reboot,shutdown"
-            property int index: 3
             checked: Plasmoid.configuration.primaryActions === 3
+            onToggled: if (checked) {
+                root.cfg_primaryActions = 3
+                root.cfg_systemFavorites = "lock-screen,logout,save-session,switch-user,suspend,hibernate,reboot,shutdown"
+            }
         }
 
         QQC2.CheckBox {
@@ -284,13 +290,5 @@ KCM.SimpleKCM {
 
     QQC2.ButtonGroup {
         id: radioGroup
-        onCheckedButtonChanged: {
-            if (checkedButton) {
-
-                root.cfg_primaryActions = checkedButton.index // qmllint disable missing-property
-                root.cfg_systemFavorites = checkedButton.actions // qmllint disable missing-property
-
-            }
-        }
     }
 }

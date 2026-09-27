@@ -77,9 +77,10 @@ Item {
 
             onClicked: {
 
+                const delegate = menu.visualParent as AbstractKickoffItemDelegate;
                 const modelActionTriggered = Tools.triggerAction(
-                    menu.visualParent.view.model, // qmllint disable missing-property
-                    menu.visualParent.index, // qmllint disable missing-property
+                    delegate.view.model,
+                    delegate.index,
                     modelData.actionId,
                     modelData.actionArgument
                 )

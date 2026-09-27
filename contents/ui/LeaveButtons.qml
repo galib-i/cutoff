@@ -63,7 +63,7 @@ RowLayout {
         sourceModel: systemModel
 
         function systemFavoritesContainsRow(sourceRow, sourceParent) {
-            const FavoriteIdRole = sourceModel.KItemModels.KRoleNames.role("favoriteId");
+            const FavoriteIdRole = KItemModels.KRoleNames.role("favoriteId");
             const favoriteId = sourceModel.data(sourceModel.index(sourceRow, 0, sourceParent), FavoriteIdRole);
             return String(Plasmoid.configuration.systemFavorites).includes(favoriteId);
         }

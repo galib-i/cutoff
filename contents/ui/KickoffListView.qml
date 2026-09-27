@@ -25,6 +25,13 @@ EmptyPage {
 
     required property var kickoffItem
 
+    component KickoffListViewImpl : ListView {
+        readonly property real availableWidth: width - leftMargin - rightMargin
+        readonly property real availableHeight: height - topMargin - bottomMargin
+        property bool movedWithKeyboard: false
+        property bool movedWithWheel: false
+    }
+
     property alias model: listViewItem.model
     property alias count: listViewItem.count
     property alias currentIndex: listViewItem.currentIndex
@@ -79,13 +86,8 @@ EmptyPage {
     leftPadding: verticalScrollBar.visible ? verticalScrollBar.implicitWidth : 0
     rightPadding: verticalScrollBar.visible && !root.mirrored ? verticalScrollBar.implicitWidth : 0
 
-    contentItem: ListView {
+    contentItem: KickoffListViewImpl {
         id: listViewItem
-
-        readonly property real availableWidth: width - leftMargin - rightMargin
-        readonly property real availableHeight: height - topMargin - bottomMargin
-        property bool movedWithKeyboard: false
-        property bool movedWithWheel: false
 
         Accessible.role: Accessible.List
 
@@ -142,7 +144,7 @@ EmptyPage {
                 viewMovedWithKeyboard: root.movedWithKeyboard
                 kickoffItem: root.kickoffItem
 
-                width: listViewItem.availableWidth // qmllint disable missing-property
+                width: listViewItem.availableWidth
 
         }
 
@@ -157,7 +159,7 @@ EmptyPage {
                 required property string section
 
 
-                width: listViewItem.availableWidth // qmllint disable missing-property
+                width: listViewItem.availableWidth
 
                 height: KickoffSingleton.compactListDelegateHeight
                 text: section.length === 1 ? section.toUpperCase() : section
@@ -197,8 +199,8 @@ EmptyPage {
 
 
             onWheel: wheel => {
-                listViewItem.movedWithWheel = true // qmllint disable missing-property
-                listViewItem.movedWithKeyboard = false // qmllint disable missing-property
+                listViewItem.movedWithWheel = true
+                listViewItem.movedWithKeyboard = false
                 movedWithWheelTimer.restart()
             }
         }
@@ -226,29 +228,29 @@ EmptyPage {
         Timer {
             id: movedWithKeyboardTimer
             interval: 200
-            onTriggered: listViewItem.movedWithKeyboard = false // qmllint disable missing-property
+            onTriggered: listViewItem.movedWithKeyboard = false
         }
 
         Timer {
             id: movedWithWheelTimer
             interval: 200
-            onTriggered: listViewItem.movedWithWheel = false // qmllint disable missing-property
+            onTriggered: listViewItem.movedWithWheel = false
         }
 
         Timer {
             id: launchMatchTimer
             interval: 750
             onTriggered: {
-
-                listViewItem.currentItem?.action.trigger(); // qmllint disable missing-property
+                const currentDelegate = listViewItem.currentItem as AbstractKickoffItemDelegate;
+                currentDelegate?.action.trigger();
 
                 root.currentItem.forceActiveFocus(Qt.ShortcutFocusReason);
             }
         }
 
         onCurrentItemChanged: {
-
-            if (launchMatchTimer.running && listViewItem.currentItem?.text.toLowerCase().includes(root.kickoffItem.runnerModel.query.toLowerCase())) { // qmllint disable missing-property
+            const currentDelegate = listViewItem.currentItem as AbstractKickoffItemDelegate;
+            if (launchMatchTimer.running && currentDelegate?.text.toLowerCase().includes(root.kickoffItem.runnerModel.query.toLowerCase())) {
 
                 launchMatchTimer.stop()
                 launchMatchTimer.triggered()
@@ -334,12 +336,13 @@ EmptyPage {
                     } break
                     case Qt.Key_Return:
                         /* Fall through*/
-                    case Qt.Key_Enter:
+                    case Qt.Key_Enter: {
+                        const currentDelegate = listViewItem.currentItem as AbstractKickoffItemDelegate;
                         if (launchMatchTimer.running) {
                             launchMatchTimer.stop()
                             launchMatchTimer.triggered()
 
-                        } else if (!root.kickoffItem.runnerModel.querying || listViewItem.currentItem?.text.toLowerCase().includes(root.kickoffItem.runnerModel.query.toLowerCase())) { // qmllint disable missing-property
+                        } else if (!root.kickoffItem.runnerModel.querying || currentDelegate?.text.toLowerCase().includes(root.kickoffItem.runnerModel.query.toLowerCase())) {
 
                             launchMatchTimer.triggered()
                         } else {
@@ -347,6 +350,7 @@ EmptyPage {
                         }
                         event.accepted = true;
                         break;
+                    }
                 }
             }
             movedWithKeyboard = event.accepted
