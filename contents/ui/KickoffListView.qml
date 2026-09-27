@@ -82,9 +82,8 @@ EmptyPage {
                             contentWidth, // exclude padding to avoid scrollbars automatically affecting implicitWidth
                             implicitHeaderWidth2,
                             implicitFooterWidth2)
-
-    leftPadding: verticalScrollBar.visible ? verticalScrollBar.implicitWidth : 0
-    rightPadding: verticalScrollBar.visible && !root.mirrored ? verticalScrollBar.implicitWidth : 0
+    leftPadding: verticalScrollBar.implicitWidth
+    rightPadding: !root.mirrored ? verticalScrollBar.implicitWidth : 0
 
     contentItem: KickoffListViewImpl {
         id: listViewItem
