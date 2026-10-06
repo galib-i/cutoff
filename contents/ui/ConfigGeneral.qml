@@ -39,6 +39,7 @@ KCM.SimpleKCM {
     property alias cfg_popupWidth: popupWidthSpinBox.value
     property alias cfg_popupHeight: popupHeightSpinBox.value
     property alias cfg_showConfigureButton: showConfigureButtonCheckbox.checked
+    property alias cfg_showPinButton: showPinButtonCheckbox.checked
     property alias cfg_highlightNewlyInstalledApps: highlightNewlyInstalledAppsCheckbox.checked
 
     // Catch these to avoid warnings
@@ -48,6 +49,7 @@ KCM.SimpleKCM {
     property int cfg_popupWidthDefault
     property int cfg_popupHeightDefault
     property bool cfg_showConfigureButtonDefault
+    property bool cfg_showPinButtonDefault
     property bool cfg_pinDefault
     property bool cfg_highlightNewlyInstalledAppsDefault
     property string cfg_iconDefault
@@ -182,8 +184,14 @@ KCM.SimpleKCM {
 
         QQC2.CheckBox {
             id: showConfigureButtonCheckbox
-            text: i18n("Show settings icon in menu")
+            text: i18n("Show `Configure` button in menu")
             checked: Plasmoid.configuration.showConfigureButton
+        }
+
+        QQC2.CheckBox {
+            id: showPinButtonCheckbox
+            text: i18n("Show `Keep open` button in menu")
+            checked: Plasmoid.configuration.showPinButton
         }
 
         QQC2.CheckBox {

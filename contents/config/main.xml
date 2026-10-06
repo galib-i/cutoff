@@ -57,7 +57,12 @@
         </entry>
 
         <entry name="showConfigureButton" type="Bool">
-            <label>Show configure button in menu</label>
+            <label>Show `Configure` button in menu</label>
+            <default>true</default>
+        </entry>
+
+        <entry name="showPinButton" type="Bool">
+            <label>Show `Keep open` button in menu</label>
             <default>true</default>
         </entry>
     </group>
