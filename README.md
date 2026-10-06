@@ -48,8 +48,9 @@ To update or remove it:
 ## Configuration
 
 Right-click the widget and choose _Configure Cutoff…_:
+
 <p align="center">
-  <img width="500" alt="Cutoff configurations" src="https://github.com/user-attachments/assets/a249dce0-f599-4ca8-a117-cc7625dd8780" />
+  <img width="500" alt="Cutoff configurations" src="https://github.com/user-attachments/assets/efb37c59-7a40-481f-ac10-bc61b85e3655" />
 </p>
 
 ##
