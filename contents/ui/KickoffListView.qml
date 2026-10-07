@@ -50,20 +50,6 @@ EmptyPage {
 
     clip: listViewItem.height < listViewItem.contentHeight
 
-    header: MouseArea {
-        implicitHeight: KickoffSingleton.listItemMetrics?.fixedMargins.top ?? 0
-        hoverEnabled: root.mainContentView || Plasmoid.configuration.switchCategoryOnHover
-        onEntered: {
-            if (containsMouse) {
-                const targetIndex = listViewItem.indexAt(mouseX + listViewItem.contentX, listViewItem.contentY)
-                if (targetIndex >= 0) {
-                    listViewItem.currentIndex = targetIndex
-                    listViewItem.forceActiveFocus(Qt.MouseFocusReason)
-                }
-            }
-        }
-    }
-
     footer: MouseArea {
         implicitHeight: KickoffSingleton.listItemMetrics?.fixedMargins.bottom ?? 0
         hoverEnabled: root.mainContentView || Plasmoid.configuration.switchCategoryOnHover
@@ -157,10 +143,8 @@ EmptyPage {
             delegate: PlasmaExtras.ListSectionHeader {
                 required property string section
 
-
                 width: listViewItem.availableWidth
 
-                height: KickoffSingleton.compactListDelegateHeight
                 text: section.length === 1 ? section.toUpperCase() : section
             }
         }
