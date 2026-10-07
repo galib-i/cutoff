@@ -50,20 +50,6 @@ EmptyPage {
 
     clip: listViewItem.height < listViewItem.contentHeight
 
-    header: MouseArea {
-        implicitHeight: KickoffSingleton.listItemMetrics?.fixedMargins.top ?? 0
-        hoverEnabled: root.mainContentView || Plasmoid.configuration.switchCategoryOnHover
-        onEntered: {
-            if (containsMouse) {
-                const targetIndex = listViewItem.indexAt(mouseX + listViewItem.contentX, listViewItem.contentY)
-                if (targetIndex >= 0) {
-                    listViewItem.currentIndex = targetIndex
-                    listViewItem.forceActiveFocus(Qt.MouseFocusReason)
-                }
-            }
-        }
-    }
-
     footer: MouseArea {
         implicitHeight: KickoffSingleton.listItemMetrics?.fixedMargins.bottom ?? 0
         hoverEnabled: root.mainContentView || Plasmoid.configuration.switchCategoryOnHover
@@ -112,6 +98,8 @@ EmptyPage {
         currentIndex: -1
         focus: true
         interactive: height < contentHeight
+        // The list only scrolls vertically.
+        flickableDirection: Flickable.VerticalFlick
         pixelAligned: true
         reuseItems: false // explicitly disabled because it doesn't work correctly with switching models like we do
         boundsBehavior: Flickable.StopAtBounds
@@ -121,6 +109,14 @@ EmptyPage {
         keyNavigationWraps: false
         highlightResizeDuration: 0
         highlightFollowsCurrentItem: false
+
+        // The applications list is created before the theme's background margins.
+        // When the margin changes, the list doesn't move to match so it is 6px too far left.
+        Binding {
+            target: listViewItem
+            property: "contentX"
+            value: listViewItem.originX - listViewItem.leftMargin
+        }
 
         HoverHandler {
             onHoveredChanged: {
@@ -157,10 +153,8 @@ EmptyPage {
             delegate: PlasmaExtras.ListSectionHeader {
                 required property string section
 
-
                 width: listViewItem.availableWidth
 
-                height: KickoffSingleton.compactListDelegateHeight
                 text: section.length === 1 ? section.toUpperCase() : section
             }
         }
