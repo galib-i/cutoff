@@ -76,6 +76,7 @@ PlasmaExtras.PlasmoidHeading {
 
                 PlasmaExtras.SearchField {
                     id: searchField
+                    focusSequences: [] // Hide tooltip / disable ctrl+f shortcut
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                     Layout.fillWidth: true
                     Layout.leftMargin: root.kickoffItem.backgroundMetrics.leftPadding
