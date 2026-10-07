@@ -23,8 +23,8 @@ PlasmaExtras.PlasmoidHeading {
     contentHeight: leaveButtons.implicitHeight
 
     // We use an increased vertical padding to improve touch usability
-    leftPadding: root.kickoffItem.backgroundMetrics.leftPadding
-    rightPadding: root.kickoffItem.backgroundMetrics.rightPadding
+    leftPadding: root.kickoffItem.backgroundMetrics.leftPadding * 2
+    rightPadding: root.kickoffItem.backgroundMetrics.rightPadding * 2
     topPadding: Kirigami.Units.smallSpacing * 2
     bottomPadding: Kirigami.Units.smallSpacing * 2
 
