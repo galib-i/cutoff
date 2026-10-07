@@ -98,6 +98,8 @@ EmptyPage {
         currentIndex: -1
         focus: true
         interactive: height < contentHeight
+        // The list only scrolls vertically.
+        flickableDirection: Flickable.VerticalFlick
         pixelAligned: true
         reuseItems: false // explicitly disabled because it doesn't work correctly with switching models like we do
         boundsBehavior: Flickable.StopAtBounds
@@ -107,6 +109,14 @@ EmptyPage {
         keyNavigationWraps: false
         highlightResizeDuration: 0
         highlightFollowsCurrentItem: false
+
+        // The applications list is created before the theme's background margins.
+        // When the margin changes, the list doesn't move to match so it is 6px too far left.
+        Binding {
+            target: listViewItem
+            property: "contentX"
+            value: listViewItem.originX - listViewItem.leftMargin
+        }
 
         HoverHandler {
             onHoveredChanged: {
