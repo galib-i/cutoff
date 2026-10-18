@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.0-or-later
  */
 
+// qmllint disable missing-property
 pragma ComponentBehavior: Bound
 
 import QtQuick
@@ -25,7 +26,6 @@ BasePage {
         }
 
     }
-
 
     contentAreaComponent: KickoffListView {
         id: applicationsListView
@@ -70,7 +70,6 @@ BasePage {
                         id: favDelegate
 
                         width: applicationsListView.view.availableWidth
-
 
                         mouseArea.onEntered: {
                             applicationsListView.view.currentIndex = -1

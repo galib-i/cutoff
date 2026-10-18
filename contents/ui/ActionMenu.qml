@@ -7,7 +7,6 @@
 
     SPDX-License-Identifier: GPL-2.0-or-later
 */
-
 pragma ComponentBehavior: Bound
 pragma Singleton // NOTE: Singletons are shared between all instances of a plasmoid
 
@@ -76,7 +75,6 @@ Item {
             }
 
             onClicked: {
-
                 const delegate = menu.visualParent as AbstractKickoffItemDelegate;
                 const modelActionTriggered = Tools.triggerAction(
                     delegate.view.model,

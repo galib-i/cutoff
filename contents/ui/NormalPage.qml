@@ -12,7 +12,6 @@ EmptyPage {
     required property var kickoffItem
 
     contentItem: ApplicationsPage {
-        id: applicationsPage
         kickoffItem: root.kickoffItem
     }
 

@@ -7,6 +7,7 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
+// qmllint disable missing-property
 pragma ComponentBehavior: Bound
 
 import QtQuick
@@ -26,9 +27,7 @@ PlasmaExtras.PlasmoidHeading {
     readonly property bool isActiveRepresentation: root.kickoffItem.realFullRep === root.fullRepresentationRoot
 
     property alias searchText: searchField.text
-    property Item configureButton: configureButton
-    property Item pinButton: pinButton
-
+    property Item pinButton: pinButtonItem
 
     contentHeight: layoutContainer.height
         + root.kickoffItem.backgroundMetrics.topPadding
@@ -62,7 +61,6 @@ PlasmaExtras.PlasmoidHeading {
             Keys.forwardTo: searchField.activeFocus ? null : searchField
 
             RowLayout {
-                id: rowLayout
                 spacing: root.spacing
                 height: parent.height
                 anchors {
@@ -80,7 +78,7 @@ PlasmaExtras.PlasmoidHeading {
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                     Layout.fillWidth: true
                     Layout.leftMargin: root.kickoffItem.backgroundMetrics.leftPadding
-                    Layout.rightMargin: (configureButton.visible || pinButton.visible) ? 0 : root.kickoffItem.backgroundMetrics.leftPadding
+                    Layout.rightMargin: (configureButton.visible || root.pinButton.visible) ? 0 : root.kickoffItem.backgroundMetrics.leftPadding
                     focus: true
 
                     Keys.onEscapePressed: event => {
@@ -157,7 +155,7 @@ PlasmaExtras.PlasmoidHeading {
                             Application.layoutDirection == Qt.RightToLeft ? Qt.TabFocusReason : Qt.BacktabFocusReason)
                     }
                     Keys.onRightPressed: event => {
-                        pinButton.forceActiveFocus(
+                        root.pinButton.forceActiveFocus(
                             Application.layoutDirection == Qt.RightToLeft ? Qt.BacktabFocusReason : Qt.TabFocusReason)
                     }
                     onClicked: {
@@ -166,7 +164,7 @@ PlasmaExtras.PlasmoidHeading {
                     }
                 }
                 PC3.ToolButton {
-                    id: pinButton
+                    id: pinButtonItem
                     checkable: true
                     checked: Plasmoid.configuration.pin
                     icon.name: "window-pin"
@@ -179,7 +177,7 @@ PlasmaExtras.PlasmoidHeading {
                     Binding {
                         target: root.kickoffItem
                         property: "hideOnWindowDeactivate"
-                        value: !pinButton.checked
+                        value: !pinButtonItem.checked
                         restoreMode: Binding.RestoreBinding
                         // Only the active view's pin button should control this.
                         when: root.isActiveRepresentation

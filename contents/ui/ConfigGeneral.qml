@@ -7,6 +7,7 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
+// qmllint disable missing-property
 pragma ComponentBehavior: Bound
 
 import QtQuick
@@ -28,7 +29,6 @@ KCM.SimpleKCM {
 
     property string cfg_menuLabel: menuLabel.text
     property string cfg_icon: Plasmoid.configuration.icon
-
 
     property alias cfg_appNameFormat: appNameFormat.currentIndex
     property var cfg_systemFavorites: String(Plasmoid.configuration.systemFavorites)
@@ -245,7 +245,6 @@ KCM.SimpleKCM {
         }
 
         QQC2.RadioButton {
-            id: powerActionsButton
             Kirigami.FormData.label: i18nc("@title:group prefix for radio button group", "Footer Buttons:")
             text: i18nc("@option:radio Show buttons for", "Power")
             QQC2.ButtonGroup.group: radioGroup
@@ -257,7 +256,6 @@ KCM.SimpleKCM {
         }
 
         QQC2.RadioButton {
-            id: sessionActionsButton
             text: i18nc("@option:radio Show buttons for", "Session")
             QQC2.ButtonGroup.group: radioGroup
             checked: Plasmoid.configuration.primaryActions === 1
@@ -268,7 +266,6 @@ KCM.SimpleKCM {
         }
 
         QQC2.RadioButton {
-            id: allActionsButton
             text: i18nc("@option:radio Show buttons for", "Power and session")
             QQC2.ButtonGroup.group: radioGroup
             checked: Plasmoid.configuration.primaryActions === 3

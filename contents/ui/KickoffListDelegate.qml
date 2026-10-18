@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2011 Martin *Gräßlin <mgraesslin@kde.org>
+    SPDX-FileCopyrightText: 2011 Martin Gräßlin <mgraesslin@kde.org>
     SPDX-FileCopyrightText: 2012 Gregor Taetzner <gregor@freenet.de>
     SPDX-FileCopyrightText: 2014 Sebastian Kügler <sebas@kde.org>
     SPDX-FileCopyrightText: 2015-2018 Eike Hein <hein@kde.org>
@@ -10,6 +10,7 @@
     SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+// qmllint disable missing-property
 pragma ComponentBehavior: Bound
 
 import QtQuick
@@ -38,17 +39,14 @@ AbstractKickoffItemDelegate {
     icon.height: compact ? Kirigami.Units.iconSizes.smallMedium : Kirigami.Units.iconSizes.medium
 
     labelTruncated: label.truncated
-    descriptionTruncated: descriptionLabel.truncated
-    descriptionVisible: descriptionLabel.visible
 
-    dragIconItem: icon
+    dragIconItem: iconItem
 
     contentItem: RowLayout {
-        id: row
         spacing: Kirigami.Units.largeSpacing
 
         Kirigami.Icon {
-            id: icon
+            id: iconItem
             implicitWidth: root.icon.width
             implicitHeight: root.icon.height
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
@@ -95,8 +93,8 @@ AbstractKickoffItemDelegate {
                     Layout.fillWidth: true
                     visible: {
                         let isApplicationSearchResult = root.model?.group === "Applications" || root.model?.group === "System Settings"
-                        let isSearchResultWithDescription = root.isSearchResult && (Plasmoid.configuration?.appNameFormat > 1 || !isApplicationSearchResult)
-                        return text.length > 0 && (isSearchResultWithDescription || (text !== label.text && Plasmoid.configuration?.appNameFormat > 1))
+                        let isSearchResultWithDescription = root.isSearchResult && (Plasmoid.configuration.appNameFormat > 1 || !isApplicationSearchResult)
+                        return text.length > 0 && (isSearchResultWithDescription || (text !== label.text && Plasmoid.configuration.appNameFormat > 1))
                     }
                     opacity: 0.75
                     text: root.description
@@ -129,8 +127,6 @@ AbstractKickoffItemDelegate {
     }
 
     Loader {
-        id: separatorLoader
-
         anchors.left: root.left
         anchors.right: root.right
         anchors.verticalCenter: root.verticalCenter

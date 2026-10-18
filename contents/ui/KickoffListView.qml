@@ -12,7 +12,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 
-import org.kde.plasma.plasmoid
 import org.kde.plasma.components as PC3
 import org.kde.plasma.extras as PlasmaExtras
 
@@ -27,7 +26,6 @@ EmptyPage {
 
     component KickoffListViewImpl : ListView {
         readonly property real availableWidth: width - leftMargin - rightMargin
-        readonly property real availableHeight: height - topMargin - bottomMargin
         property bool movedWithKeyboard: false
         property bool movedWithWheel: false
     }
@@ -44,15 +42,11 @@ EmptyPage {
 
     property bool mainContentView: false
 
-    /**
-     * Request showing the section view
-     */
-
     clip: listViewItem.height < listViewItem.contentHeight
 
     footer: MouseArea {
         implicitHeight: KickoffSingleton.listItemMetrics?.fixedMargins.bottom ?? 0
-        hoverEnabled: root.mainContentView || Plasmoid.configuration.switchCategoryOnHover
+        hoverEnabled: root.mainContentView
         onEntered: {
             if (containsMouse) {
                 const targetIndex = listViewItem.indexAt(mouseX + listViewItem.contentX, listViewItem.height + listViewItem.contentY - 1)
@@ -135,17 +129,12 @@ EmptyPage {
         }
 
         delegate: KickoffListDelegate {
-                viewMovedWithWheel: root.movedWithWheel
-                viewMovedWithKeyboard: root.movedWithKeyboard
-                kickoffItem: root.kickoffItem
+            viewMovedWithWheel: root.movedWithWheel
+            viewMovedWithKeyboard: root.movedWithKeyboard
+            kickoffItem: root.kickoffItem
 
-                width: listViewItem.availableWidth
-
+            width: listViewItem.availableWidth
         }
-
-        // Without switch-on-hover, it's possible for the selected category and the hovered category to be adjacent.
-        // When this happens, their highlights touch and look ugly without some artificial spacing added.
-        spacing: 0
 
         section {
             property: "group"
@@ -189,7 +178,6 @@ EmptyPage {
 
             horizontalStepSize: 20 * Qt.styleHints.wheelScrollLines // qmllint disable missing-property
             verticalStepSize: 20 * Qt.styleHints.wheelScrollLines // qmllint disable missing-property
-
 
             onWheel: wheel => {
                 listViewItem.movedWithWheel = true

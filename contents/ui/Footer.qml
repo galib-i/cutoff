@@ -17,10 +17,10 @@ PlasmaExtras.PlasmoidHeading {
 
     required property var kickoffItem
 
-    readonly property alias leaveButtons: leaveButtons
+    readonly property alias leaveButtons: leaveButtonsItem
 
     contentWidth: spacing
-    contentHeight: leaveButtons.implicitHeight
+    contentHeight: leaveButtonsItem.implicitHeight
 
     // We use an increased vertical padding to improve touch usability
     leftPadding: root.kickoffItem.backgroundMetrics.leftPadding * 2
@@ -37,7 +37,7 @@ PlasmaExtras.PlasmoidHeading {
     position: PC3.ToolBar.Footer
 
     LeaveButtons {
-        id: leaveButtons
+        id: leaveButtonsItem
         kickoffItem: root.kickoffItem
 
         anchors {
@@ -49,7 +49,6 @@ PlasmaExtras.PlasmoidHeading {
         // available width for leaveButtons
 
         maximumWidth: root.availableWidth - root.spacing // qmllint disable missing-property
-
 
         Keys.onUpPressed: event => {
             root.kickoffItem.lastCentralPane.forceActiveFocus(Qt.BacktabFocusReason);
@@ -63,6 +62,4 @@ PlasmaExtras.PlasmoidHeading {
             easing.type: Easing.InQuad
         }
     }
-
-
 }

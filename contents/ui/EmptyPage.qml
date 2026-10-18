@@ -12,7 +12,6 @@ import QtQuick.Templates as T
  * but inherits no externally defined content or behavior.
  */
 T.Page {
-    id: root
     // implicitHeader/FooterWidth and implicitHeader/FooterHeight are 0 when header/footer is not visible
     // using a custom implementation that only checks if defined.
     property real implicitHeaderWidth2: header ? header.implicitWidth : 0

@@ -28,13 +28,6 @@ T.ItemDelegate {
     property bool viewMovedWithWheel: false
     property bool viewMovedWithKeyboard: false
 
-    enum AppNameFormat {
-        NameOnly,
-        GenericNameOnly,
-        NameAndGenericName,
-        GenericNameAndName
-    }
-
     // model properties
     required property var model
     required property int index
@@ -57,17 +50,15 @@ T.ItemDelegate {
     readonly property bool dragEnabled: enabled
         && Plasmoid.immutability !== PlasmaCore.Types.SystemImmutable
 
-    readonly property alias mouseArea: mouseArea
+    readonly property alias mouseArea: mouseAreaItem
 
     readonly property bool iconAndLabelsShouldlookSelected: down
 
     property bool labelTruncated: false
-    property bool descriptionTruncated: false
-    property bool descriptionVisible: true
 
     property Item dragIconItem: null
 
-    down: mouseArea.pressed || dragHandler.active
+    down: mouseAreaItem.pressed || dragHandler.active
 
     function openActionMenu(x = undefined, y = undefined) {
         if (!hasActionList) { return; }
@@ -144,11 +135,7 @@ T.ItemDelegate {
             }
             root.view.currentIndex = root.index
             // if successfully triggered, close pop-up
-
-
             if (root.view.model.trigger && root.view.model.trigger(root.index, "", null)) {
-
-
                 if (root.kickoffItem.hideOnWindowDeactivate) {
                     root.kickoffItem.closeMenu();
                 }
@@ -196,7 +183,7 @@ T.ItemDelegate {
     }
 
     MouseArea {
-        id: mouseArea
+        id: mouseAreaItem
         parent: root
         anchors.fill: parent
         anchors.margins: 1
@@ -218,7 +205,6 @@ T.ItemDelegate {
             // - When the movedWithKeyboard condition is broken, we do not want to
             //   select the hovered item without moving the mouse.
             // - Don't highlight separators.
-            // - Don't switch category items on hover if the setting isn't enabled
             if (root.viewMovedWithKeyboard || root.isSeparator) {
                 return
             }
@@ -262,7 +248,7 @@ T.ItemDelegate {
         }
         return ""
     }
-    PC3.ToolTip.visible: mouseArea.containsMouse && PC3.ToolTip.text.length > 0
+    PC3.ToolTip.visible: mouseAreaItem.containsMouse && PC3.ToolTip.text.length > 0
     PC3.ToolTip.delay: Kirigami.Units.toolTipDelay
 
     background: Loader {

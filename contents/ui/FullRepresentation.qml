@@ -24,12 +24,10 @@ EmptyPage {
 
     required property var kickoffItem
 
-    // kickoff is Kickoff.qml
     leftPadding: -root.kickoffItem.backgroundMetrics.leftPadding
     rightPadding: -root.kickoffItem.backgroundMetrics.rightPadding
     topPadding: 0
     bottomPadding: -root.kickoffItem.backgroundMetrics.bottomPadding
-    readonly property var appletInterface: root.kickoffItem
 
     Layout.minimumWidth: Kirigami.Units.gridUnit * 10
     Layout.minimumHeight: Kirigami.Units.gridUnit * 10
@@ -40,7 +38,6 @@ EmptyPage {
     Layout.preferredWidth: Kirigami.Units.gridUnit * 30
     Layout.preferredHeight: Kirigami.Units.gridUnit * 20
 
-    property alias normalPage: normalPage
     property bool blockingHoverFocus: true
     property var interceptedPosition: null
 
@@ -221,7 +218,7 @@ EmptyPage {
                         contentItemStackView.reverseTransitions = false
                         contentItemStackView.replace(searchViewComponent)
                     } else {
-                        contentItemStackView.contentItem.currentIndex = 0
+                        (contentItemStackView.contentItem as KickoffListView).currentIndex = 0
                     }
                 }
                 root.blockingHoverFocus = true
@@ -234,15 +231,11 @@ EmptyPage {
         active: !!root.kickoffItem.dragSource.sourceItem
         anchors.fill: parent
         sourceComponent: DropArea {
-            id: favoriteRemoveDropArea
-
             readonly property AbstractKickoffItemDelegate draggedItem:
                 root.kickoffItem.dragSource.sourceItem as AbstractKickoffItemDelegate
 
             onEntered: event => {
-
                 if (draggedItem?.view.model instanceof Kicker.KAStatsFavoritesModel) {
-
                     event.accept (Qt.MoveAction)
                     draggedItem.removalPlaceholderActive = true
                 } else {
@@ -251,9 +244,7 @@ EmptyPage {
             }
 
             onDropped: event => {
-
                 if (draggedItem && root.kickoffItem.rootModel.favoritesModel.isFavorite(draggedItem.model.favoriteId) && draggedItem.view.model instanceof Kicker.KAStatsFavoritesModel) {
-
                     root.kickoffItem.rootModel.favoritesModel.removeFavorite(draggedItem.model.favoriteId);
                     event.accept(Qt.MoveAction)
                 } else {

@@ -5,6 +5,7 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
+// qmllint disable missing-property
 pragma ComponentBehavior: Bound
 
 import QtQuick

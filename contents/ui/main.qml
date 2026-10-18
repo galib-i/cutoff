@@ -10,8 +10,8 @@
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
+// qmllint disable missing-property
 pragma ComponentBehavior: Bound
-
 
 import QtQuick
 import QtQuick.Layouts
@@ -33,7 +33,7 @@ PlasmoidItem {
         }
     }
     Connections {
-        target: Plasmoid.configuration
+        target: Plasmoid.configuration as QtObject
         function onCenterOnScreenChanged() {
             kickoff.expanded = false;
             centerDialog.visible = false;
@@ -108,7 +108,7 @@ PlasmoidItem {
 
         Component.onCompleted: {
 
-            favoritesModel.initForClient("org.kde.plasma.kickoff.favorites.instance-" + Plasmoid.id) // qmllint disable missing-property
+            favoritesModel.initForClient("org.kde.plasma.kickoff.favorites.instance-" + Plasmoid.id)
 
         }
     }
@@ -136,14 +136,12 @@ PlasmoidItem {
     // "Cannot assign QObject* to TextField_QMLTYPE_8*"
     property var searchField: null
 
-    // Set in FullRepresentation.qml, ApplicationPage.qml, PlacesPage.qml
+    // Set in FullRepresentation.qml, ApplicationsPage.qml
     property var contentArea: null // is searchView when searching
 
     // Set in NormalPage.qml
     property var footer: null
 
-    // True when central pane (and header) LayoutMirroring diverges from global
-    // LayoutMirroring, in order to achieve the desired sidebar position
     // References to items according to their focus chain order
     readonly property Item firstHeaderItem: searchField
     readonly property Item lastHeaderItem: header ? header.pinButton : null
@@ -309,7 +307,6 @@ PlasmoidItem {
         }
 
         RowLayout {
-            id: iconLabelRow
             anchors.fill: parent
             spacing: 0
 
@@ -396,6 +393,6 @@ PlasmoidItem {
     ]
 
     Component.onCompleted: {
-        Plasmoid.activationTogglesExpanded = true
+        kickoff.activationTogglesExpanded = true
     }
 } // root

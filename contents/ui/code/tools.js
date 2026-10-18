@@ -22,7 +22,6 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
         return null;
     }
 
-
     if (favoriteModel.activities === undefined ||
         favoriteModel.activities.activities.length <= 1) {
         const action = {};
@@ -70,7 +69,6 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
                 favoriteActivity: "",
             },
         });
-
 
         // Adding items for each activity separately
 
