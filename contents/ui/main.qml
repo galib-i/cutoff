@@ -83,7 +83,9 @@ PlasmoidItem {
         height: 0
     }
     property Item floatingFullRepItem: null
-    property var realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRepItem : fullRepresentationItem
+    // fullRepresentationItem wraps the pop-up content.
+    readonly property var fullRepresentationInner: fullRepresentationItem ? fullRepresentationItem.innerItem : null
+    property var realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRepItem : fullRepresentationInner
 
     switchWidth: realFullRep ? realFullRep.Layout.minimumWidth : Kirigami.Units.iconSizes.huge * 10
     switchHeight: realFullRep ? realFullRep.Layout.minimumHeight : Kirigami.Units.iconSizes.huge * 10
@@ -197,7 +199,35 @@ PlasmoidItem {
 
     preferredRepresentation: compactRepresentation
 
-    fullRepresentation: Plasmoid.configuration.centerOnScreen ? compactRepresentation : defaultFullRepresentation
+    fullRepresentation: fullRepresentationWrapper
+
+    // Fixed wrapper where the Loader inside swaps the real content.
+    // libplasma only builds the full representation once, so the component itself can't be swapped on a config change.
+    Component {
+        id: fullRepresentationWrapper
+        FocusScope {
+            id: popupWrapper
+            readonly property Item innerItem: popupLoader.item as Item
+
+            // Let the popup size itself from the content's real size.
+            Layout.minimumWidth: innerItem ? innerItem.Layout.minimumWidth : 0
+            Layout.minimumHeight: innerItem ? innerItem.Layout.minimumHeight : 0
+            Layout.preferredWidth: innerItem ? innerItem.Layout.preferredWidth : -1
+            Layout.preferredHeight: innerItem ? innerItem.Layout.preferredHeight : -1
+            Layout.maximumWidth: innerItem ? innerItem.Layout.maximumWidth : Infinity
+            Layout.maximumHeight: innerItem ? innerItem.Layout.maximumHeight : Infinity
+            Layout.fillWidth: innerItem ? innerItem.Layout.fillWidth : false
+            Layout.fillHeight: innerItem ? innerItem.Layout.fillHeight : false
+            implicitWidth: innerItem ? innerItem.implicitWidth : 0
+            implicitHeight: innerItem ? innerItem.implicitHeight : 0
+
+            Loader {
+                id: popupLoader
+                anchors.fill: parent
+                sourceComponent: Plasmoid.configuration.centerOnScreen ? kickoff.compactRepresentation : defaultFullRepresentation
+            }
+        }
+    }
 
     Component {
         id: defaultFullRepresentation
