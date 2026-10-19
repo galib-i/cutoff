@@ -37,6 +37,8 @@ PlasmoidItem {
         function onCenterOnScreenChanged() {
             kickoff.expanded = false;
             centerDialog.visible = false;
+            // The pop-up tree is created lazily when the option is enabled, not only at startup.
+            kickoff.ensureFloatingFullRep()
         }
     }
     property bool isMenuOpen: Plasmoid.configuration.centerOnScreen ? centerDialog.visible : kickoff.expanded
@@ -62,10 +64,26 @@ PlasmoidItem {
             kickoff.expanded = !wasOpen;
         }
     }
+    function ensureFloatingFullRep() {
+        if (Plasmoid.configuration.centerOnScreen && !floatingFullRepItem) {
+            floatingFullRepItem = floatingFullRepComponent.createObject(floatingFullRepHost)
+        }
+    }
 
     width: Kirigami.Units.iconSizes.huge
     height: Kirigami.Units.iconSizes.huge
-    property var realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRep : fullRepresentationItem
+    // Only instantiated when centerOnScreen is enabled: a full second launcher
+    // tree that would otherwise sit in memory unused (created in onCompleted below).
+    // Hidden host gives the created object a deterministic parent without
+    // painting it; the dialog reparents it into its content item when shown.
+    Item {
+        id: floatingFullRepHost
+        visible: false
+        width: 0
+        height: 0
+    }
+    property Item floatingFullRepItem: null
+    property var realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRepItem : fullRepresentationItem
 
     switchWidth: realFullRep ? realFullRep.Layout.minimumWidth : Kirigami.Units.iconSizes.huge * 10
     switchHeight: realFullRep ? realFullRep.Layout.minimumHeight : Kirigami.Units.iconSizes.huge * 10
@@ -192,8 +210,10 @@ PlasmoidItem {
         visible: false
         onVisibleChanged: visible => {
             if (visible) {
-                x = Math.round((Screen.width - floatingFullRep.width) / 2)
-                y = Math.round((Screen.height - floatingFullRep.height) / 2)
+                if (kickoff.floatingFullRepItem) {
+                    x = Math.round((Screen.width - kickoff.floatingFullRepItem.width) / 2)
+                    y = Math.round((Screen.height - kickoff.floatingFullRepItem.height) / 2)
+                }
 
                 // Force KWin to give the dialog keyboard focus
                 centerDialog.requestActivate()
@@ -212,7 +232,13 @@ PlasmoidItem {
             }
         }
 
-        mainItem: FullRepresentation {
+        mainItem: kickoff.floatingFullRepItem
+    }
+
+    // The pop-up U is a Component so it only exists when centerOnScreen is enabled so it's not always on in the background
+    Component {
+        id: floatingFullRepComponent
+        FullRepresentation {
             id: floatingFullRep
             kickoffItem: kickoff
             width: Plasmoid.configuration.popupWidth > 0 ? Plasmoid.configuration.popupWidth : Math.max(Kirigami.Units.gridUnit * 36, implicitWidth)
@@ -394,5 +420,6 @@ PlasmoidItem {
 
     Component.onCompleted: {
         kickoff.activationTogglesExpanded = true
+        kickoff.ensureFloatingFullRep()
     }
 } // root
