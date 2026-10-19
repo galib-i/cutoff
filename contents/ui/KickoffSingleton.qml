@@ -30,8 +30,7 @@ Item {
         font: Kirigami.Theme.defaultFont
     }
 
-    // Approximate grid cell size based on standard Kickoff grid delegates
-    // (large icon + 2 lines of text + padding)
-    readonly property real gridCellSize: Kirigami.Units.iconSizes.large + (fontMetrics.height * 2) + (Kirigami.Units.largeSpacing * 2)
+    // Approximate list cell size (large icon + 2 lines of text + padding)
+    readonly property real cellSize: Kirigami.Units.iconSizes.large + (fontMetrics.height * 2) + (Kirigami.Units.largeSpacing * 2)
     //END
 }

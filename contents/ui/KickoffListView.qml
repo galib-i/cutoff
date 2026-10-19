@@ -73,16 +73,16 @@ EmptyPage {
         implicitWidth: {
             let totalMargins = leftMargin + rightMargin
             if (root.mainContentView) {
-                if (root.kickoffItem.mayHaveGridWithScrollBar) {
+                if (root.kickoffItem.mayHaveVerticalScrollBar) {
                     totalMargins += verticalScrollBar.implicitWidth
                 }
-                return KickoffSingleton.gridCellSize * root.kickoffItem.minimumGridRowCount + totalMargins
+                return KickoffSingleton.cellSize * root.kickoffItem.minimumRowCount + totalMargins
             }
             return contentWidth + totalMargins
         }
         implicitHeight: {
-            // use grid cells to determine size
-            let h = KickoffSingleton.gridCellSize * root.kickoffItem.minimumGridRowCount
+            // use cell size to determine size
+            let h = KickoffSingleton.cellSize * root.kickoffItem.minimumRowCount
             return h + topMargin + bottomMargin
         }
 

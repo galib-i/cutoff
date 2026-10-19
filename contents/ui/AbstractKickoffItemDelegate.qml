@@ -189,7 +189,7 @@ T.ItemDelegate {
         anchors.margins: 1
         // Flickable margins are not mirrored, so disable layout mirroring
         LayoutMirroring.enabled: false
-        // Only for ListView since extending margins for GridView is hard
+        // Extend the hover area over the view's margins
         anchors.leftMargin: root.view instanceof ListView ? -root.view.leftMargin : anchors.margins
         anchors.rightMargin: root.view instanceof ListView ? -root.view.rightMargin : anchors.margins
         hoverEnabled: !!(root.view

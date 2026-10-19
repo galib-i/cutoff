@@ -18,17 +18,14 @@ import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.ksvg as KSvg
-import org.kde.plasma.components as PC3
 import org.kde.plasma.private.kicker as Kicker
 import org.kde.kirigami as Kirigami
-
-import "code/tools.js" as Tools
 
 PlasmoidItem {
     id: kickoff
     onExpandedChanged: expanded => {
         if (Plasmoid.configuration.centerOnScreen && expanded) {
-            centerDialog.visible = !centerDialog.visible
+            centerPopup.popupVisible = !centerPopup.popupVisible
             Qt.callLater(function() { kickoff.expanded = false })
         }
     }
@@ -36,13 +33,13 @@ PlasmoidItem {
         target: Plasmoid.configuration as QtObject
         function onCenterOnScreenChanged() {
             kickoff.expanded = false;
-            centerDialog.visible = false;
+            centerPopup.popupVisible = false;
             // The pop-up tree is created lazily when the option is enabled, not only at startup.
             kickoff.ensureFloatingFullRep()
         }
     }
-    property bool isMenuOpen: Plasmoid.configuration.centerOnScreen ? centerDialog.visible : kickoff.expanded
-    property alias centerDialogVisible: centerDialog.visible
+    property bool isMenuOpen: Plasmoid.configuration.centerOnScreen ? centerPopup.popupVisible : kickoff.expanded
+    property alias centerDialogVisible: centerPopup.popupVisible
     function closeMenu() {
         if (Plasmoid.configuration.centerOnScreen) {
             centerDialogVisible = false;
@@ -65,27 +62,23 @@ PlasmoidItem {
         }
     }
     function ensureFloatingFullRep() {
-        if (Plasmoid.configuration.centerOnScreen && !floatingFullRepItem) {
-            floatingFullRepItem = floatingFullRepComponent.createObject(floatingFullRepHost)
+        if (Plasmoid.configuration.centerOnScreen) {
+            centerPopup.ensure()
         }
     }
 
     width: Kirigami.Units.iconSizes.huge
     height: Kirigami.Units.iconSizes.huge
-    // Only instantiated when centerOnScreen is enabled: a full second launcher
-    // tree that would otherwise sit in memory unused (created in onCompleted below).
-    // Hidden host gives the created object a deterministic parent without
-    // painting it; the dialog reparents it into its content item when shown.
-    Item {
-        id: floatingFullRepHost
-        visible: false
-        width: 0
-        height: 0
+
+    // "Center on screen" pop-up (see CenterPopup.qml).
+    CenterPopup {
+        id: centerPopup
+        kickoffItem: kickoff
     }
-    property Item floatingFullRepItem: null
-    // fullRepresentationItem wraps the pop-up content.
+
+    // The panel pop-up's real full representation (unwrapped from its wrapper).
     readonly property var fullRepresentationInner: fullRepresentationItem ? fullRepresentationItem.innerItem : null
-    property var realFullRep: Plasmoid.configuration.centerOnScreen ? floatingFullRepItem : fullRepresentationInner
+    property var realFullRep: Plasmoid.configuration.centerOnScreen ? centerPopup.floatingFullRepItem : fullRepresentationInner
 
     switchWidth: realFullRep ? realFullRep.Layout.minimumWidth : Kirigami.Units.iconSizes.huge * 10
     switchHeight: realFullRep ? realFullRep.Layout.minimumHeight : Kirigami.Units.iconSizes.huge * 10
@@ -102,7 +95,7 @@ PlasmoidItem {
     readonly property bool vertical: Plasmoid.formFactor === PlasmaCore.Types.Vertical
 
     // Used to prevent the width from changing frequently when the scrollbar appears or disappears
-    readonly property bool mayHaveGridWithScrollBar: kickoff.rootModel.favoritesModel.count > minimumGridRowCount * minimumGridRowCount
+    readonly property bool mayHaveVerticalScrollBar: kickoff.rootModel.favoritesModel.count > minimumRowCount * minimumRowCount
 
     //BEGIN Models
     readonly property Kicker.RootModel rootModel: Kicker.RootModel {
@@ -152,8 +145,6 @@ PlasmoidItem {
     property var header: null
 
     // Set in Header.qml
-    // QTBUG Using PC3.TextField as type makes assignment fail
-    // "Cannot assign QObject* to TextField_QMLTYPE_8*"
     property var searchField: null
 
     // Set in FullRepresentation.qml, ApplicationsPage.qml
@@ -189,9 +180,9 @@ PlasmoidItem {
     }
 
     // Used to show smaller Kickoff on small screens
-    readonly property int minimumGridRowCount:
+    readonly property int minimumRowCount:
         Math.min(Screen.desktopAvailableWidth, Screen.desktopAvailableHeight) * Screen.devicePixelRatio
-            < KickoffSingleton.gridCellSize * 4 + KickoffSingleton.gridCellSize * 2
+            < KickoffSingleton.cellSize * 4 + KickoffSingleton.cellSize * 2
         ? 2 : 4
     //END
 
@@ -199,241 +190,9 @@ PlasmoidItem {
 
     preferredRepresentation: compactRepresentation
 
-    fullRepresentation: fullRepresentationWrapper
+    fullRepresentation: FullRepresentationWrapper { kickoffItem: kickoff }
 
-    // Fixed wrapper where the Loader inside swaps the real content.
-    // libplasma only builds the full representation once, so the component itself can't be swapped on a config change.
-    Component {
-        id: fullRepresentationWrapper
-        FocusScope {
-            id: popupWrapper
-            readonly property Item innerItem: popupLoader.item as Item
-
-            // Let the popup size itself from the content's real size.
-            Layout.minimumWidth: innerItem ? innerItem.Layout.minimumWidth : 0
-            Layout.minimumHeight: innerItem ? innerItem.Layout.minimumHeight : 0
-            Layout.preferredWidth: innerItem ? innerItem.Layout.preferredWidth : -1
-            Layout.preferredHeight: innerItem ? innerItem.Layout.preferredHeight : -1
-            Layout.maximumWidth: innerItem ? innerItem.Layout.maximumWidth : Infinity
-            Layout.maximumHeight: innerItem ? innerItem.Layout.maximumHeight : Infinity
-            Layout.fillWidth: innerItem ? innerItem.Layout.fillWidth : false
-            Layout.fillHeight: innerItem ? innerItem.Layout.fillHeight : false
-            implicitWidth: innerItem ? innerItem.implicitWidth : 0
-            implicitHeight: innerItem ? innerItem.implicitHeight : 0
-
-            Loader {
-                id: popupLoader
-                anchors.fill: parent
-                sourceComponent: Plasmoid.configuration.centerOnScreen ? kickoff.compactRepresentation : defaultFullRepresentation
-            }
-        }
-    }
-
-    Component {
-        id: defaultFullRepresentation
-        FullRepresentation { focus: true; kickoffItem: kickoff }
-    }
-
-    PlasmaCore.Dialog {
-        id: centerDialog
-        location: PlasmaCore.Types.Floating
-        visible: false
-        onVisibleChanged: visible => {
-            if (visible) {
-                if (kickoff.floatingFullRepItem) {
-                    x = Math.round((Screen.width - kickoff.floatingFullRepItem.width) / 2)
-                    y = Math.round((Screen.height - kickoff.floatingFullRepItem.height) / 2)
-                }
-
-                // Force KWin to give the dialog keyboard focus
-                centerDialog.requestActivate()
-
-                // Force the search box to grab typing cursor
-                if (kickoff.searchField) {
-                    kickoff.searchField.forceActiveFocus(Qt.OtherFocusReason)
-                }
-            }
-        }
-        hideOnWindowDeactivate: kickoff.hideOnWindowDeactivate
-        flags: kickoff.hideOnWindowDeactivate ? (Qt.Dialog | Qt.FramelessWindowHint) : (Qt.Dialog | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-        onWindowDeactivated: {
-            if (kickoff.hideOnWindowDeactivate) {
-                visible = false;
-            }
-        }
-
-        mainItem: kickoff.floatingFullRepItem
-    }
-
-    // The pop-up U is a Component so it only exists when centerOnScreen is enabled so it's not always on in the background
-    Component {
-        id: floatingFullRepComponent
-        FullRepresentation {
-            id: floatingFullRep
-            kickoffItem: kickoff
-            width: Plasmoid.configuration.popupWidth > 0 ? Plasmoid.configuration.popupWidth : Math.max(Kirigami.Units.gridUnit * 36, implicitWidth)
-            height: Plasmoid.configuration.popupHeight > 0 ? Plasmoid.configuration.popupHeight : Kirigami.Units.gridUnit * 20
-            focus: true
-        }
-    }
-
-    // Only exists because the default CompactRepresentation doesn't:
-    // - open on drag
-    // - allow defining a custom drop handler
-    // - expose the ability to show text below or beside the icon
-    // TODO remove once it gains those features
-    compactRepresentation: MouseArea {
-        id: compactRoot
-
-        // Taken from DigitalClock to ensure uniform sizing when next to each other
-        readonly property bool tooSmall: Plasmoid.formFactor === PlasmaCore.Types.Horizontal && Math.round(2 * (compactRoot.height / 5)) <= Kirigami.Theme.smallFont.pixelSize
-
-        readonly property bool shouldHaveIcon: Plasmoid.formFactor === PlasmaCore.Types.Vertical || Plasmoid.icon !== ""
-        readonly property bool shouldHaveLabel: Plasmoid.formFactor !== PlasmaCore.Types.Vertical && Plasmoid.configuration.menuLabel !== ""
-
-        readonly property int iconSize: Kirigami.Units.iconSizes.large
-
-        readonly property var sizing: {
-            const displayedIcon = imageFallback.visible ? imageFallback : (buttonIcon.valid ? buttonIcon : buttonIconFallback);
-
-            let impWidth = 0;
-            if (shouldHaveIcon) {
-                impWidth += displayedIcon.width;
-            }
-            if (shouldHaveLabel) {
-                impWidth += labelTextField.contentWidth + labelTextField.Layout.leftMargin + labelTextField.Layout.rightMargin;
-            }
-            const impHeight = displayedIcon.height > 0 ? displayedIcon.height : iconSize
-
-            // at least square, but can be wider/taller
-            if (kickoff.inPanel) {
-                if (kickoff.vertical) {
-                    return {
-                        preferredWidth: iconSize,
-                        preferredHeight: impHeight
-                    };
-                } else { // horizontal
-                    return {
-                        preferredWidth: impWidth,
-                        preferredHeight: iconSize
-                    };
-                }
-            } else {
-                return {
-                    preferredWidth: impWidth,
-                    preferredHeight: Kirigami.Units.iconSizes.small,
-                };
-            }
-        }
-
-        implicitWidth: iconSize
-        implicitHeight: iconSize
-
-        Layout.preferredWidth: sizing.preferredWidth
-        Layout.preferredHeight: sizing.preferredHeight
-        Layout.minimumWidth: Layout.preferredWidth
-        Layout.minimumHeight: Layout.preferredHeight
-
-        hoverEnabled: true
-
-        property bool wasExpanded
-
-        Accessible.name: Plasmoid.title
-        Accessible.role: Accessible.Button
-
-        onPressed: wasExpanded = kickoff.isMenuOpen
-        onClicked: kickoff.toggleMenu(wasExpanded)
-
-        DropArea {
-            id: compactDragArea
-            anchors.fill: parent
-            onEntered: drag => {
-                if (drag.hasUrls) {
-                    expandOnDragTimer.start()
-                }
-            }
-            onExited: expandOnDragTimer.stop()
-        }
-
-        Timer {
-            id: expandOnDragTimer
-            // this is an interaction and not an animation, so we want it as a constant
-            interval: 250
-            onTriggered: kickoff.openMenu()
-        }
-
-        RowLayout {
-            anchors.fill: parent
-            spacing: 0
-
-            Kirigami.Icon {
-                id: buttonIcon
-
-                Layout.fillWidth: kickoff.vertical
-                Layout.fillHeight: !kickoff.vertical
-                Layout.preferredWidth: kickoff.vertical ? -1 : height / (implicitHeight / implicitWidth)
-                Layout.preferredHeight: !kickoff.vertical ? -1 : width * (implicitHeight / implicitWidth)
-                Layout.maximumHeight: Kirigami.Units.iconSizes.huge
-                Layout.maximumWidth: Kirigami.Units.iconSizes.huge
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                source: Tools.iconOrDefault(Plasmoid.formFactor === PlasmaCore.Types.Vertical, Plasmoid.icon)
-                active: compactRoot.containsMouse || compactDragArea.containsDrag
-                roundToIconSize: implicitHeight === implicitWidth
-                visible: valid && !imageFallback.visible
-            }
-
-            Kirigami.Icon {
-                id: buttonIconFallback
-                // fallback is assumed to be square
-                Layout.fillWidth: kickoff.vertical
-                Layout.fillHeight: !kickoff.vertical
-                Layout.preferredWidth: kickoff.vertical ? -1 : height
-                Layout.preferredHeight: !kickoff.vertical ? -1 : width
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-
-                source: buttonIcon.valid ? null : Tools.defaultIconName
-                active: compactRoot.containsMouse || compactDragArea.containsDrag
-                visible: !buttonIcon.valid && Plasmoid.icon !== "" && !imageFallback.visible
-            }
-
-            Image {
-                id: imageFallback
-
-                readonly property bool nonSquareImage: sourceSize.width != sourceSize.height
-
-                visible: nonSquareImage && status == Image.Ready
-                source: Plasmoid.icon.startsWith("/") ? "file:" + Plasmoid.icon.split("/").map(encodeURIComponent).join("/") : ""
-
-                Layout.fillWidth: kickoff.vertical
-                Layout.fillHeight: !kickoff.vertical
-                Layout.preferredWidth: kickoff.vertical ? -1 : height / (implicitHeight / implicitWidth)
-                Layout.preferredHeight: !kickoff.vertical ? -1 : width * (implicitHeight / implicitWidth)
-                Layout.maximumHeight: kickoff.vertical ? -1 : Kirigami.Units.iconSizes.huge
-                Layout.maximumWidth: kickoff.vertical ? Kirigami.Units.iconSizes.huge : -1
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                fillMode: Image.PreserveAspectFit
-                mipmap: true
-            }
-
-            PC3.Label {
-                id: labelTextField
-
-                Layout.fillHeight: true
-                Layout.leftMargin: Kirigami.Units.smallSpacing
-                Layout.rightMargin: Kirigami.Units.smallSpacing
-
-                text: Plasmoid.configuration.menuLabel
-                textFormat: Text.StyledText
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignVCenter
-                wrapMode: Text.NoWrap
-                fontSizeMode: Text.VerticalFit
-                font.pixelSize: compactRoot.tooSmall ? Kirigami.Theme.defaultFont.pixelSize : Kirigami.Units.iconSizes.roundedIconSize(Kirigami.Units.gridUnit * 2)
-                minimumPointSize: Kirigami.Theme.smallFont.pointSize
-                visible: compactRoot.shouldHaveLabel
-            }
-        }
-    }
+    compactRepresentation: CompactRepresentation { kickoffItem: kickoff }
 
     Kicker.ProcessRunner {
         id: processRunner
