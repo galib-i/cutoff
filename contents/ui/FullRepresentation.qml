@@ -145,7 +145,7 @@ EmptyPage {
 
                         iconName: "edit-none"
                         opacity: 0
-                        text: i18nc("@info:status", "No matches")
+                        text: Translations.tr("No matches")
 
                         Connections {
                             target: root.kickoffItem.runnerModel

@@ -63,18 +63,18 @@ KCM.SimpleKCM {
         QQC2.Button {
             id: iconButton
 
-            Kirigami.FormData.label: i18nc("@label prefix for icon-only button", "Icon:")
+            Kirigami.FormData.label: Translations.tr("Icon:")
 
             implicitWidth: previewFrame.width + Kirigami.Units.smallSpacing * 2
             implicitHeight: previewFrame.height + Kirigami.Units.smallSpacing * 2
             hoverEnabled: true
 
-            Accessible.name: i18nc("@action:button", "Change Application Launcher's icon")
-            Accessible.description: i18nc("@info:whatsthis", "Current icon is %1. Click to open menu to change the current icon or reset to the default icon.", root.cfg_icon)
+            Accessible.name: Translations.tr("Change Application Launcher's icon")
+            Accessible.description: Translations.tr("Current icon is %1. Click to open menu to change the current icon or reset to the default icon.", [root.cfg_icon])
             Accessible.role: Accessible.ButtonMenu
 
             QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
-            QQC2.ToolTip.text: i18nc("@info:tooltip", "Icon name is \"%1\"", root.cfg_icon)
+            QQC2.ToolTip.text: Translations.tr("Icon name is \"%1\"", [root.cfg_icon])
             QQC2.ToolTip.visible: iconButton.hovered && root.cfg_icon.length > 0
 
             KIconThemes.IconDialog {
@@ -109,19 +109,19 @@ KCM.SimpleKCM {
                 y: parent.height
 
                 QQC2.MenuItem {
-                    text: i18nc("@item:inmenu Open icon chooser dialog", "Choose…")
+                    text: Translations.tr("Choose…")
                     icon.name: "document-open-folder"
-                    Accessible.description: i18nc("@info:whatsthis", "Choose an icon for Application Launcher")
+                    Accessible.description: Translations.tr("Choose an icon for Application Launcher")
                     onClicked: iconDialog.open()
                 }
                 QQC2.MenuItem {
-                    text: i18nc("@item:inmenu Reset icon to default", "Reset to default icon")
+                    text: Translations.tr("Reset to default icon")
                     icon.name: "edit-clear"
                     enabled: root.cfg_icon !== Tools.defaultIconName
                     onClicked: root.cfg_icon = Tools.defaultIconName
                 }
                 QQC2.MenuItem {
-                    text: i18nc("@action:inmenu", "Remove icon")
+                    text: Translations.tr("Remove icon")
                     icon.name: "delete"
                     enabled: root.cfg_icon !== "" && menuLabel.text && Plasmoid.formFactor !== PlasmaCore.Types.Vertical
                     onClicked: root.cfg_icon = ""
@@ -132,9 +132,9 @@ KCM.SimpleKCM {
         Kirigami.ActionTextField {
             id: menuLabel
             enabled: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
-            Kirigami.FormData.label: i18nc("@label:textbox", "Text label:")
+            Kirigami.FormData.label: Translations.tr("Text label:")
             text: Plasmoid.configuration.menuLabel
-            placeholderText: i18nc("@info:placeholder", "Type here to add a text label")
+            placeholderText: Translations.tr("Type here to add a text label")
             onTextEdited: {
                 root.cfg_menuLabel = menuLabel.text
 
@@ -148,7 +148,7 @@ KCM.SimpleKCM {
             rightActions: QQC2.Action {
                 icon.name: "edit-clear"
                 enabled: menuLabel.text !== ""
-                text: i18nc("@action:button", "Reset menu label")
+                text: Translations.tr("Reset menu label")
                 onTriggered: {
                     menuLabel.clear()
                     root.cfg_menuLabel = ""
@@ -161,7 +161,7 @@ KCM.SimpleKCM {
             Layout.fillWidth: true
             Layout.maximumWidth: Kirigami.Units.gridUnit * 25
             visible: Plasmoid.formFactor === PlasmaCore.Types.Vertical
-            text: i18nc("@info", "A text label cannot be set when the Panel is vertical.")
+            text: Translations.tr("A text label cannot be set when the Panel is vertical.")
             wrapMode: Text.Wrap
             font: Kirigami.Theme.smallFont
         }
@@ -172,31 +172,31 @@ KCM.SimpleKCM {
 
         QQC2.ComboBox {
             id: appNameFormat
-            Kirigami.FormData.label: i18nc("Appearance options", "Appearance:")
-            model: [i18nc("@item:inlistbox", "Name only"), i18nc("@item:inlistbox", "Description only"), i18nc("@item:inlistbox", "Name (Description)"), i18nc("@item:inlistbox", "Description (Name)")]
+            Kirigami.FormData.label: Translations.tr("Appearance:")
+            model: [Translations.tr("Name only"), Translations.tr("Description only"), Translations.tr("Name (Description)"), Translations.tr("Description (Name)")]
         }
 
         QQC2.CheckBox {
             id: compactModeCheckbox
-            text: i18nc("@option:check", "Use compact list item style")
+            text: Translations.tr("Use compact list item style")
             checked: Plasmoid.configuration.compactMode
         }
 
         QQC2.CheckBox {
             id: showConfigureButtonCheckbox
-            text: i18n("Show `Configure` button in menu")
+            text: Translations.tr("Show `Configure` button in menu")
             checked: Plasmoid.configuration.showConfigureButton
         }
 
         QQC2.CheckBox {
             id: showPinButtonCheckbox
-            text: i18n("Show `Keep open` button in menu")
+            text: Translations.tr("Show `Keep open` button in menu")
             checked: Plasmoid.configuration.showPinButton
         }
 
         QQC2.CheckBox {
             id: highlightNewlyInstalledAppsCheckbox
-            text: i18nc("@option:check", "Highlight newly-installed applications")
+            text: Translations.tr("Highlight newly-installed applications")
         }
 
         Item {
@@ -205,13 +205,13 @@ KCM.SimpleKCM {
 
         QQC2.CheckBox {
             id: centerOnScreenCheckbox
-            Kirigami.FormData.label: i18n("Menu:")
-            text: i18nc("@option:check", "Center on screen")
+            Kirigami.FormData.label: Translations.tr("Menu:")
+            text: Translations.tr("Center on screen")
             checked: Plasmoid.configuration.centerOnScreen
         }
 
         RowLayout {
-            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Width:")
+            Kirigami.FormData.label: Translations.tr("Pop-up Width:")
             QQC2.SpinBox {
                 id: popupWidthSpinBox
                 enabled: centerOnScreenCheckbox.checked
@@ -221,12 +221,12 @@ KCM.SimpleKCM {
                 value: Plasmoid.configuration.popupWidth
             }
             QQC2.Label {
-                text: "(0 = Auto)"
+                text: Translations.tr("(0 = Auto)")
             }
         }
 
         RowLayout {
-            Kirigami.FormData.label: i18nc("@label:spinbox", "Pop-up Height:")
+            Kirigami.FormData.label: Translations.tr("Pop-up Height:")
             QQC2.SpinBox {
                 id: popupHeightSpinBox
                 enabled: centerOnScreenCheckbox.checked
@@ -236,7 +236,7 @@ KCM.SimpleKCM {
                 value: Plasmoid.configuration.popupHeight
             }
             QQC2.Label {
-                text: "(0 = Auto)"
+                text: Translations.tr("(0 = Auto)")
             }
         }
 
@@ -245,8 +245,8 @@ KCM.SimpleKCM {
         }
 
         QQC2.RadioButton {
-            Kirigami.FormData.label: i18nc("@title:group prefix for radio button group", "Footer Buttons:")
-            text: i18nc("@option:radio Show buttons for", "Power")
+            Kirigami.FormData.label: Translations.tr("Footer Buttons:")
+            text: Translations.tr("Power")
             QQC2.ButtonGroup.group: radioGroup
             checked: Plasmoid.configuration.primaryActions === 0
             onToggled: if (checked) {
@@ -256,7 +256,7 @@ KCM.SimpleKCM {
         }
 
         QQC2.RadioButton {
-            text: i18nc("@option:radio Show buttons for", "Session")
+            text: Translations.tr("Session")
             QQC2.ButtonGroup.group: radioGroup
             checked: Plasmoid.configuration.primaryActions === 1
             onToggled: if (checked) {
@@ -266,7 +266,7 @@ KCM.SimpleKCM {
         }
 
         QQC2.RadioButton {
-            text: i18nc("@option:radio Show buttons for", "Power and session")
+            text: Translations.tr("Power and session")
             QQC2.ButtonGroup.group: radioGroup
             checked: Plasmoid.configuration.primaryActions === 3
             onToggled: if (checked) {
@@ -277,7 +277,7 @@ KCM.SimpleKCM {
 
         QQC2.CheckBox {
             id: showActionButtonCaptions
-            text: i18nc("@option:check", "Show action button captions")
+            text: Translations.tr("Show action button captions")
         }
 
         Item {
@@ -285,10 +285,10 @@ KCM.SimpleKCM {
         }
 
         QQC2.Button {
-            Kirigami.FormData.label: i18n("Search:")
+            Kirigami.FormData.label: Translations.tr("Search:")
             enabled: KConfig.KAuthorized.authorizeControlModule("kcm_plasmasearch")
             icon.name: "settings-configure"
-            text: i18nc("@action:button opens plasmasearch kcm", "Configure Search Plugins…")
+            text: Translations.tr("Configure Search Plugins…")
             onClicked: KCM.KCMLauncher.openSystemSettings("kcm_plasmasearch")
         }
     }

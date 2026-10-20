@@ -56,7 +56,7 @@ BasePage {
 
                 PlasmaExtras.ListSectionHeader {
                     width: parent.width
-                    text: i18n("Favorites")
+                    text: Translations.tr("Favorites")
                 }
 
                 ListView {
@@ -97,7 +97,7 @@ BasePage {
 
                 PlasmaExtras.ListSectionHeader {
                     width: parent.width
-                    text: i18n("All Applications")
+                    text: Translations.tr("All Applications")
                 }
             }
         }

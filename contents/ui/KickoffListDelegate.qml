@@ -121,7 +121,7 @@ AbstractKickoffItemDelegate {
 
                 type: Kirigami.Badge.Type.Positive
 
-                Accessible.description: i18n("Newly-installed application")
+                Accessible.description: Translations.tr("Newly-installed application")
             }
         }
     }

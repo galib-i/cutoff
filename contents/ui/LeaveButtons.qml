@@ -171,7 +171,7 @@ RowLayout {
         icon.width: Kirigami.Units.iconSizes.smallMedium
         icon.height: Kirigami.Units.iconSizes.smallMedium
         icon.name: ["system-log-out", "system-shutdown", "view-more-symbolic", "view-more-symbolic"][Plasmoid.configuration.primaryActions]
-        text: [i18nc("@title:menu menubutton","Session"), i18nc("@title:menu menubutton", "Power"), i18nc("@title:menu menubutton", "More"), i18nc("@title:menu menubutton", "Session and Power")][Plasmoid.configuration.primaryActions]
+        text: [Translations.tr("Session"), Translations.tr("Power"), Translations.tr("More"), Translations.tr("Session and Power")][Plasmoid.configuration.primaryActions]
         // Make it look pressed while the menu is open
         down: contextMenu.status === PlasmaExtras.Menu.Open || pressed
         Keys.onTabPressed: event => {

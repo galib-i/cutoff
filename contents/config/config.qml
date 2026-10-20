@@ -1,9 +1,10 @@
 import QtQuick
 import org.kde.plasma.configuration
+import "../ui"
 
 ConfigModel {
     ConfigCategory {
-        name: i18nc("@title:group for configuration dialog page", "General")
+        name: Translations.tr("General")
         icon: "preferences-desktop-plasma"
         source: "ConfigGeneral.qml"
     }

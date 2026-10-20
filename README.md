@@ -53,6 +53,17 @@ Right-click the widget and choose _Configure Cutoff…_:
   <img width="500" alt="Cutoff configurations" src="https://github.com/user-attachments/assets/efb37c59-7a40-481f-ac10-bc61b85e3655" />
 </p>
 
+## Translations
+
+Edit [`contents/locale/languages.qml`](contents/locale/languages.qml) directly.
+
+1. Open `contents/locale/languages.qml` on GitHub and click the pencil icon to edit it.
+2. Copy the `"en_US"` block and rename it to your [language code](https://en.wikipedia.org/wiki/IETF_language_tag) (e.g. `"de"`, `"fr"`).
+3. Replace the English values with your translation (don't edit the keys on the left of the colons). Leave out any you don't translate, they'll fall back to English.
+4. Commit your change to a branch and open a pull request.
+
+Please keep the keys (left-hand side) untouched, and keep the same capitalisation, punctuation and `%1` placeholders.
+
 ##
 
 _Licensed under the [GPLv2 or later license](LICENSE), inheriting from the original source code._

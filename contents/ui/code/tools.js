@@ -17,7 +17,7 @@ function iconOrDefault(isVertical, preferredIconName) {
         ? defaultIconName : preferredIconName;
 }
 
-function createFavoriteActions(i18n, favoriteModel, favoriteId) {
+function createFavoriteActions(tr, favoriteModel, favoriteId) {
     if (!favoriteModel || !favoriteId || !favoriteModel.enabled) {
         return null;
     }
@@ -27,11 +27,11 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
         const action = {};
 
         if (favoriteModel.isFavorite(favoriteId)) {
-            action.text = i18n("Remove from Favorites");
+            action.text = tr("Remove from Favorites");
             action.icon = "bookmark-remove";
             action.actionId = "_kicker_favorite_remove";
         } else if (favoriteModel.maxFavorites === -1 || favoriteModel.count < favoriteModel.maxFavorites) {
-            action.text = i18n("Add to Favorites");
+            action.text = tr("Add to Favorites");
             action.icon = "bookmark-new";
             action.actionId = "_kicker_favorite_add";
         } else {
@@ -55,7 +55,7 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
             !(linkedActivities.indexOf(":global") === -1);
 
         subActions.push({
-            text      : i18n("On All Activities"),
+            text      : tr("On All Activities"),
             checkable : true,
 
             actionId  : linkedToAllActivities ?
@@ -104,7 +104,7 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
 
         // Adding the item to link/unlink to the current activity
 
-        addActivityItem(favoriteModel.activities.currentActivity, i18n("On the Current Activity"));
+        addActivityItem(favoriteModel.activities.currentActivity, tr("On the Current Activity"));
 
         subActions.push({
             type: "separator",
@@ -118,7 +118,7 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
         });
 
         return [{
-            text       : i18n("Show in Favorites"),
+            text       : tr("Show in Favorites"),
             icon       : "favorite",
             subActions,
         }];
