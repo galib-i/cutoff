@@ -119,8 +119,8 @@ QtObject {
             "Newly-installed application": "Applicazione installata di recente",
             "General": "Generale",
         }),
-        
-          "nl": ({
+
+        "nl": ({
             "Session": "Sessie",
             "Power": "Energie",
             "More": "Meer",
@@ -166,7 +166,7 @@ QtObject {
             "All Applications": "Alle programma's",
             "Edit Applications…": "Programma's bewerken…",
             "No matches": "Er zijn geen zoekresultaten",
-            "Newly-installed application": "Nieuw progamma",
+            "Newly-installed application": "Nieuw programma",
             "General": "Algemeen",
         }),
     })
