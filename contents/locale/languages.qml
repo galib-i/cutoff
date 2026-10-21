@@ -120,7 +120,7 @@ QtObject {
             "General": "Generale",
         }),
         
-          "nl_NL": ({
+          "nl": ({
             "Session": "Sessie",
             "Power": "Energie",
             "More": "Meer",
